@@ -3,41 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Free Temp SMS | Receive SMS Online</title>
+    <title>TempSMS Free - Receive SMS Online</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* CSS Variables for Theming */
+        /* CSS Variables for Theme */
         :root {
-            --bg-color: #f4f7f6;
-            --text-color: #333;
-            --card-bg: #ffffff;
-            --primary: #0066ff;
-            --primary-hover: #0052cc;
-            --border: #eaedf1;
-            --shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
-            --secondary-text: #666;
-            --input-bg: #fff;
+            --bg-body: #f3f4f6;
+            --bg-surface: #ffffff;
+            --text-main: #111827;
+            --text-muted: #6b7280;
+            --primary: #3b82f6;
+            --primary-hover: #2563eb;
+            --border: #e5e7eb;
+            --success: #10b981;
+            --danger: #ef4444;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --radius: 12px;
         }
 
         [data-theme="dark"] {
-            --bg-color: #121212;
-            --text-color: #f0f0f0;
-            --card-bg: #1e1e1e;
-            --primary: #3b82f6;
-            --primary-hover: #2563eb;
-            --border: #2d2d2d;
-            --shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-            --secondary-text: #aaa;
-            --input-bg: #2d2d2d;
+            --bg-body: #111827;
+            --bg-surface: #1f2937;
+            --text-main: #f9fafb;
+            --text-muted: #9ca3af;
+            --border: #374151;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; transition: background-color 0.3s, color 0.3s; }
-        body { font-family: 'Segoe UI', system-ui, sans-serif; background-color: var(--bg-color); color: var(--text-color); }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            line-height: 1.5;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
 
         /* Header */
         header {
-            background-color: var(--card-bg);
-            padding: 20px 5%;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            background-color: var(--bg-surface);
+            border-bottom: 1px solid var(--border);
+            padding: 15px 5%;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -45,265 +59,515 @@
             top: 0;
             z-index: 100;
         }
-        .logo-area h1 { font-size: 24px; color: var(--primary); }
-        .logo-area p { font-size: 14px; color: var(--secondary-text); }
-        .theme-btn { background: none; border: none; font-size: 24px; cursor: pointer; color: var(--text-color); }
+
+        .brand {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .brand h1 {
+            font-size: 22px;
+            color: var(--primary);
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .brand p {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .theme-toggle {
+            background: var(--bg-body);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .theme-toggle:hover {
+            border-color: var(--primary);
+        }
 
         /* Main Container */
-        main { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
-
-        /* Search */
-        .search-box { margin-bottom: 30px; }
-        .search-box input {
-            width: 100%; padding: 16px; border-radius: 12px;
-            border: 1px solid var(--border); background-color: var(--input-bg);
-            color: var(--text-color); font-size: 16px; outline: none;
-            box-shadow: var(--shadow);
+        main {
+            flex: 1;
+            max-width: 1000px;
+            margin: 30px auto;
+            padding: 0 20px;
+            width: 100%;
         }
-        .search-box input:focus { border-color: var(--primary); }
 
-        /* Grid Layout */
-        .grid {
+        .section-title {
+            margin-bottom: 20px;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        /* Numbers Grid */
+        .numbers-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 25px;
+            gap: 20px;
         }
 
-        /* Number Cards */
-        .card {
-            background-color: var(--card-bg); border-radius: 16px;
-            padding: 25px; box-shadow: var(--shadow);
-            border: 1px solid var(--border); display: flex; flex-direction: column; gap: 15px;
+        .number-card {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
         }
-        .card-header { display: flex; align-items: center; gap: 10px; font-size: 20px; font-weight: 600; }
-        .number-display { font-size: 24px; font-weight: bold; letter-spacing: 1px; }
-        .actions { display: flex; gap: 10px; }
+
+        .number-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--primary);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .phone-display {
+            font-size: 26px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-align: center;
+            margin: 10px 0;
+            color: var(--text-main);
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 10px;
+        }
+
         button {
-            padding: 12px; border: none; border-radius: 8px; cursor: pointer;
-            font-size: 14px; font-weight: 600; flex: 1; transition: transform 0.1s;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            padding: 12px;
+            cursor: pointer;
+            font-size: 14px;
+            flex: 1;
         }
-        button:active { transform: scale(0.96); }
-        .btn-copy { background-color: var(--border); color: var(--text-color); }
-        .btn-open { background-color: var(--primary); color: white; }
-        .btn-open:hover { background-color: var(--primary-hover); }
 
-        /* Inbox Modal */
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);
-            display: none; justify-content: center; align-items: center; z-index: 1000;
+        button:active {
+            transform: scale(0.96);
         }
-        .modal {
-            background: var(--card-bg); width: 90%; max-width: 600px;
-            border-radius: 16px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-            animation: slideIn 0.3s ease-out;
+
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid var(--border);
+            color: var(--text-main);
         }
-        @keyframes slideIn { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        .modal-header {
-            background: var(--primary); color: white; padding: 20px;
-            display: flex; justify-content: space-between; align-items: center;
+
+        .btn-outline:hover {
+            background-color: var(--bg-body);
         }
-        .close-btn { background: none; border: none; color: white; font-size: 28px; cursor: pointer; padding: 0; flex: none; }
-        .msg-list { padding: 20px; max-height: 400px; overflow-y: auto; background: var(--bg-color); }
-        
-        /* Message Bubbles */
-        .msg-item {
-            background: var(--card-bg); padding: 16px; border-radius: 12px;
-            margin-bottom: 15px; border-left: 5px solid var(--primary);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05); animation: fadeIn 0.4s;
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
         }
-        @keyframes fadeIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
-        .msg-top { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 13px; }
-        .msg-sender { font-weight: 700; color: var(--text-color); font-size: 15px; }
-        .msg-time { color: var(--secondary-text); }
-        .msg-text { color: var(--secondary-text); line-height: 1.5; }
-        .loading-text { text-align: center; padding: 20px; color: var(--secondary-text); font-weight: bold; }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+        }
+
+        /* Inbox Section */
+        #inbox-section {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .inbox-header-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .back-btn {
+            background: transparent;
+            border: none;
+            color: var(--primary);
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 0;
+            flex: none;
+        }
+
+        .back-btn:hover {
+            text-decoration: underline;
+        }
+
+        .inbox-info-card {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .active-number {
+            font-size: 24px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .timer-box {
+            background-color: var(--danger);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* Table */
+        .table-container {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow-x: auto;
+            box-shadow: var(--shadow);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th, td {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background-color: var(--bg-body);
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .sender {
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .message-text {
+            color: var(--text-muted);
+            font-size: 15px;
+        }
+
+        .otp-highlight {
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .time {
+            color: var(--text-muted);
+            font-size: 13px;
+            white-space: nowrap;
+        }
 
         /* Toast */
         .toast {
-            position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%);
-            background: #222; color: white; padding: 12px 24px; border-radius: 30px;
-            font-weight: 600; box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            transition: bottom 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 2000;
+            position: fixed;
+            bottom: -60px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--success);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-weight: 500;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            transition: bottom 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 1000;
         }
-        .toast.show { bottom: 40px; }
+
+        .toast.show {
+            bottom: 30px;
+        }
 
         /* Footer */
-        footer { text-align: center; padding: 30px; color: var(--secondary-text); font-size: 14px; }
+        footer {
+            text-align: center;
+            padding: 25px;
+            color: var(--text-muted);
+            font-size: 14px;
+            border-top: 1px solid var(--border);
+            background-color: var(--bg-surface);
+            margin-top: auto;
+        }
+
+        @media (max-width: 600px) {
+            .inbox-info-card {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .phone-display { font-size: 22px; }
+        }
     </style>
 </head>
 <body>
 
     <header>
-        <div class="logo-area">
-            <h1>💬 Free Temp SMS</h1>
-            <p>Receive SMS online instantly</p>
+        <div class="brand">
+            <h1>TempSMS Free</h1>
+            <p>Receive SMS Online Instantly</p>
         </div>
-        <button class="theme-btn" onclick="toggleTheme()" id="themeIcon">🌙</button>
+        <button class="theme-toggle" id="themeBtn" onclick="toggleTheme()">
+            🌙 Dark
+        </button>
     </header>
 
     <main>
-        <div class="search-box">
-            <input type="text" id="searchInput" placeholder="Search by country or number..." onkeyup="handleSearch()">
-        </div>
-        <div class="grid" id="numberGrid"></div>
+        <section id="numbers-section">
+            <h2 class="section-title">Available Numbers</h2>
+            <div class="numbers-grid" id="numbers-grid">
+                </div>
+        </section>
+
+        <section id="inbox-section">
+            <div class="inbox-header-controls">
+                <button class="back-btn" onclick="closeInbox()">
+                    ← Back to Numbers
+                </button>
+                <button class="btn-primary" style="flex: none; padding: 10px 20px;" onclick="refreshMessages()">
+                    🔄 Refresh Messages
+                </button>
+            </div>
+
+            <div class="inbox-info-card">
+                <div class="active-number" id="active-number-display">
+                    🇺🇸 +1 234 567 8900
+                </div>
+                <div class="timer-box">
+                    ⏱️ Expires in: <span id="expiry-timer">10:00</span>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>From</th>
+                            <th>Message</th>
+                            <th>Time</th>
+                        </tr>
+                    </thead>
+                    <tbody id="messages-body">
+                        </tbody>
+                </table>
+            </div>
+        </section>
     </main>
 
-    <div class="modal-overlay" id="inboxModal" onclick="closeModalOnOutsideClick(event)">
-        <div class="modal">
-            <div class="modal-header">
-                <div>
-                    <h2 id="modalTitle" style="font-size: 18px;">Inbox</h2>
-                    <span style="font-size: 12px; opacity: 0.8;">Auto-updating every 5s</span>
-                </div>
-                <button class="close-btn" onclick="closeInbox()">&times;</button>
-            </div>
-            <div class="msg-list" id="messageList"></div>
-        </div>
-    </div>
+    <div class="toast" id="toast">Number Copied!</div>
 
-    <div class="toast" id="toast">Copied to clipboard!</div>
-
-    <footer>&copy; 2026 Free Temp SMS. All rights reserved.</footer>
+    <footer>
+        <p>⚠️ <strong>Educational Demo:</strong> These are public dummy numbers. Do not use for sensitive accounts.</p>
+        <p style="margin-top: 8px;">&copy; 2026 TempSMS Free. All rights reserved.</p>
+    </footer>
 
     <script>
         // --- DATA ---
-        const numbersData = [
-            { flag: '🇺🇸', code: 'USA', num: '+1 223 445 8899' },
-            { flag: '🇬🇧', code: 'UK', num: '+44 7488 553322' },
-            { flag: '🇮🇳', code: 'India', num: '+91 90000 12345' },
-            { flag: '🇩🇪', code: 'Germany', num: '+49 1512 345678' },
-            { flag: '🇨🇦', code: 'Canada', num: '+1 416 555 0000' }
+        const phoneNumbers = [
+            { flag: '🇺🇸', code: 'USA', num: '+1 845 234 9911' },
+            { flag: '🇬🇧', code: 'UK', num: '+44 7911 123456' },
+            { flag: '🇮🇳', code: 'India', num: '+91 98765 43210' },
+            { flag: '🇨🇦', code: 'Canada', num: '+1 416 555 0198' },
+            { flag: '🇩🇪', code: 'Germany', num: '+49 151 23456789' }
         ];
 
-        // --- THEME TOGGLE ---
-        const themeIcon = document.getElementById('themeIcon');
-        if (localStorage.getItem('theme') === 'dark') {
-            document.documentElement.setAttribute('data-theme', 'dark');
-            themeIcon.innerText = '☀️';
-        }
+        const senders = ['Google', 'Amazon', 'WhatsApp', 'Instagram', 'Telegram', 'Bank Alert', 'Uber'];
 
-        function toggleTheme() {
-            if (document.documentElement.getAttribute('data-theme') === 'dark') {
-                document.documentElement.removeAttribute('data-theme');
-                localStorage.setItem('theme', 'light');
-                themeIcon.innerText = '🌙';
-            } else {
+        // --- STATE ---
+        let timerInterval;
+        let timeLeft = 600; // 10 minutes in seconds
+
+        // --- INITIALIZATION ---
+        function init() {
+            // Setup Theme
+            if (localStorage.getItem('theme') === 'dark') {
                 document.documentElement.setAttribute('data-theme', 'dark');
-                localStorage.setItem('theme', 'dark');
-                themeIcon.innerText = '☀️';
+                document.getElementById('themeBtn').innerText = '☀️ Light';
             }
-        }
 
-        // --- RENDER GRID ---
-        const grid = document.getElementById('numberGrid');
-        function renderNumbers(data) {
-            grid.innerHTML = data.map(item => `
-                <div class="card">
-                    <div class="card-header"><span>${item.flag}</span> ${item.code}</div>
-                    <div class="number-display">${item.num}</div>
-                    <div class="actions">
-                        <button class="btn-copy" onclick="copyNumber('${item.num}')">Copy</button>
-                        <button class="btn-open" onclick="openInbox('${item.num}', '${item.flag}')">Open Inbox</button>
+            // Render Numbers
+            const grid = document.getElementById('numbers-grid');
+            grid.innerHTML = phoneNumbers.map((item, index) => `
+                <div class="number-card">
+                    <div class="card-header">
+                        <span>${item.flag} ${item.code}</span>
+                        <span style="font-size: 12px; color: var(--success);">● Online</span>
+                    </div>
+                    <div class="phone-display" id="num-${index}">${item.num}</div>
+                    <div class="card-actions">
+                        <button class="btn-outline" onclick="copyNumber('${item.num}', this)">Copy</button>
+                        <button class="btn-primary" onclick="openInbox('${item.num}', '${item.flag}')">Open Inbox</button>
                     </div>
                 </div>
             `).join('');
         }
-        renderNumbers(numbersData);
 
-        // --- SEARCH ---
-        function handleSearch() {
-            const query = document.getElementById('searchInput').value.toLowerCase();
-            const filtered = numbersData.filter(item => 
-                item.code.toLowerCase().includes(query) || item.num.includes(query)
-            );
-            renderNumbers(filtered);
-        }
-
-        // --- COPY & TOAST ---
-        function copyNumber(text) {
-            navigator.clipboard.writeText(text);
-            const toast = document.getElementById('toast');
-            toast.innerText = `Copied ${text}`;
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 2500);
-        }
-
-        // --- API & INBOX LOGIC ---
-        const modal = document.getElementById('inboxModal');
-        const msgList = document.getElementById('messageList');
-        let refreshTimer;
-        let currentOpenNumber = '';
-
-        // Fallback dummy data generator
-        function getDummyMessages() {
-            const senders = ['Amazon', 'Google', 'Telegram', 'Netflix', 'Bank Alerts'];
-            const otp = Math.floor(100000 + Math.random() * 900000);
-            const now = new Date();
-            const time = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
-            return {
-                sender: senders[Math.floor(Math.random() * senders.length)],
-                text: `Your verification code is ${otp}. Do not share this with anyone.`,
-                time: time
-            };
-        }
-
-        async function fetchMessages(number, isInitialLoad = false) {
-            if (isInitialLoad) msgList.innerHTML = `<div class="loading-text">Fetching secure connection...</div>`;
-
-            try {
-                // Attempting to call the real API
-                const response = await fetch(`https://api.example.com/messages?number=${encodeURIComponent(number)}`);
-                if (!response.ok) throw new Error("API Offline");
-                
-                const data = await response.json();
-                // Render API data here if successful
-                
-            } catch (error) {
-                // FALLBACK: If API fails (which it will for example.com), generate dummy data
-                if (isInitialLoad) msgList.innerHTML = ''; // Clear loading text
-                
-                // Add a new dummy message to the top
-                const msg = getDummyMessages();
-                const html = `
-                    <div class="msg-item">
-                        <div class="msg-top">
-                            <span class="msg-sender">${msg.sender}</span>
-                            <span class="msg-time">${msg.time}</span>
-                        </div>
-                        <div class="msg-text">${msg.text}</div>
-                    </div>
-                `;
-                msgList.insertAdjacentHTML('afterbegin', html);
+        // --- THEME TOGGLE ---
+        function toggleTheme() {
+            const btn = document.getElementById('themeBtn');
+            if (document.documentElement.getAttribute('data-theme') === 'dark') {
+                document.documentElement.removeAttribute('data-theme');
+                localStorage.setItem('theme', 'light');
+                btn.innerText = '🌙 Dark';
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+                btn.innerText = '☀️ Light';
             }
         }
 
-        function openInbox(number, flag) {
-            currentOpenNumber = number;
-            document.getElementById('modalTitle').innerText = `${flag} ${number}`;
-            modal.style.display = 'flex';
+        // --- COPY LOGIC ---
+        function copyNumber(text, btnElement) {
+            navigator.clipboard.writeText(text);
             
-            // Initial fetch (will trigger fallback)
-            fetchMessages(number, true);
-            // Add a couple more historical messages instantly for realism
-            setTimeout(() => fetchMessages(number, false), 500);
-            setTimeout(() => fetchMessages(number, false), 1000);
+            // Button Animation
+            const originalText = btnElement.innerText;
+            btnElement.innerText = "Copied!";
+            btnElement.style.borderColor = "var(--success)";
+            btnElement.style.color = "var(--success)";
+            
+            // Show Toast
+            const toast = document.getElementById('toast');
+            toast.innerText = `Copied: ${text}`;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                btnElement.innerText = originalText;
+                btnElement.style.borderColor = "var(--border)";
+                btnElement.style.color = "var(--text-main)";
+                toast.classList.remove('show');
+            }, 2000);
+        }
 
-            // Auto refresh every 5 seconds
-            refreshTimer = setInterval(() => {
-                // 40% chance to simulate receiving a new message every 5s
-                if (Math.random() > 0.6) fetchMessages(currentOpenNumber, false);
-            }, 5000);
+        // --- MESSAGE GENERATOR ---
+        function generateRandomMessage() {
+            const sender = senders[Math.floor(Math.random() * senders.length)];
+            const otp = Math.floor(100000 + Math.random() * 900000);
+            
+            const templates = [
+                `Your verification code is <span class="otp-highlight">${otp}</span>. Do not share it.`,
+                `<span class="otp-highlight">${otp}</span> is your login OTP. Valid for 10 minutes.`,
+                `Security Alert: Use code <span class="otp-highlight">${otp}</span> to verify your account.`
+            ];
+            
+            const text = templates[Math.floor(Math.random() * templates.length)];
+            
+            const now = new Date();
+            const time = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+
+            return `
+                <tr>
+                    <td class="sender">${sender}</td>
+                    <td class="message-text">${text}</td>
+                    <td class="time">${time}</td>
+                </tr>
+            `;
+        }
+
+        // --- INBOX LOGIC ---
+        function openInbox(number, flag) {
+            document.getElementById('numbers-section').style.display = 'none';
+            document.getElementById('inbox-section').style.display = 'block';
+            
+            document.getElementById('active-number-display').innerHTML = `${flag} ${number}`;
+            
+            // Clear old messages and add 3 initial ones
+            const tbody = document.getElementById('messages-body');
+            tbody.innerHTML = '';
+            for(let i=0; i<3; i++) tbody.innerHTML += generateRandomMessage();
+            
+            startTimer();
+            window.scrollTo(0, 0);
         }
 
         function closeInbox() {
-            modal.style.display = 'none';
-            clearInterval(refreshTimer);
+            document.getElementById('inbox-section').style.display = 'none';
+            document.getElementById('numbers-section').style.display = 'block';
+            clearInterval(timerInterval);
         }
 
-        function closeModalOnOutsideClick(e) {
-            if (e.target === modal) closeInbox();
+        function refreshMessages() {
+            const tbody = document.getElementById('messages-body');
+            // Add a new message to the top
+            tbody.insertAdjacentHTML('afterbegin', generateRandomMessage());
         }
+
+        // --- EXPIRY TIMER ---
+        function startTimer() {
+            clearInterval(timerInterval);
+            timeLeft = 600; // Reset to 10 mins
+            const timerDisplay = document.getElementById('expiry-timer');
+            
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                timerDisplay.innerText = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    timerDisplay.innerText = "00:00";
+                    alert("This temporary number has expired. Please select a new one.");
+                    closeInbox();
+                }
+            }, 1000);
+        }
+
+        // Run on load
+        window.onload = init;
     </script>
 </body>
 </html>
