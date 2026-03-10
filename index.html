@@ -3,245 +3,164 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TempSMS Pro - Demo</title>
+    <title>Live TempSMS - Real API</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #f8f9fa;
-            --surface: #ffffff;
-            --text: #2b2b2b;
-            --text-light: #6c757d;
-            --primary: #4361ee;
-            --primary-hover: #3a56d4;
-            --border: #e9ecef;
-            --success: #10b981;
-            --radius: 16px;
-            --shadow: 0 10px 30px rgba(0,0,0,0.05);
+            --bg: #f8f9fa; --surface: #ffffff; --text: #2b2b2b; --text-light: #6c757d;
+            --primary: #4361ee; --border: #e9ecef; --success: #10b981; --radius: 16px;
         }
-
         [data-theme="dark"] {
-            --bg: #121212;
-            --surface: #1e1e1e;
-            --text: #f8f9fa;
-            --text-light: #adb5bd;
-            --primary: #4cc9f0;
-            --primary-hover: #3ab0d3;
-            --border: #2b2b2b;
-            --shadow: 0 10px 30px rgba(0,0,0,0.5);
+            --bg: #121212; --surface: #1e1e1e; --text: #f8f9fa; --text-light: #adb5bd;
+            --primary: #4cc9f0; --border: #2b2b2b;
         }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; transition: 0.3s; font-family: 'Poppins', sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; transition: 0.3s; }
         body { background: var(--bg); color: var(--text); padding-bottom: 50px; }
 
-        header {
-            background: var(--surface);
-            padding: 20px 5%;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .logo { font-size: 24px; font-weight: 700; color: var(--primary); display: flex; align-items: center; gap: 8px; }
-        .theme-btn { background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: 500; }
+        header { background: var(--surface); padding: 20px 5%; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 24px; font-weight: 700; color: var(--primary); }
+        .theme-btn { background: none; border: 1px solid var(--border); color: var(--text); padding: 8px 15px; border-radius: 8px; cursor: pointer; }
 
         .container { max-width: 900px; margin: 40px auto; padding: 0 20px; }
-        
-        .alert { background: rgba(239, 68, 68, 0.1); color: #ef4444; padding: 15px; border-radius: 10px; margin-bottom: 30px; font-size: 14px; text-align: center; border: 1px solid rgba(239, 68, 68, 0.2); }
-
-        .number-list { display: flex; flex-direction: column; gap: 15px; }
-
-        .number-card {
-            background: var(--surface); padding: 20px; border-radius: var(--radius);
-            box-shadow: var(--shadow); display: flex; justify-content: space-between;
-            align-items: center; border: 1px solid var(--border);
-            cursor: pointer; position: relative; overflow: hidden;
-        }
-        
-        .number-card:hover { transform: translateY(-3px); border-color: var(--primary); }
-        
+        .number-card { background: var(--surface); padding: 20px; border-radius: var(--radius); border: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; cursor: pointer; }
+        .number-card:hover { border-color: var(--primary); }
         .num-info { display: flex; align-items: center; gap: 15px; }
         .flag { font-size: 30px; }
-        .num-text h3 { font-size: 20px; letter-spacing: 1px; }
-        .num-text p { font-size: 13px; color: var(--success); font-weight: 500; }
-
-        .btn-copy {
-            background: var(--bg); border: 1px solid var(--border); color: var(--text);
-            padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 600;
-        }
-        .btn-copy:hover { background: var(--primary); color: #fff; border-color: var(--primary); }
-
-        /* Inbox Section */
-        .inbox { display: none; background: var(--surface); border-radius: var(--radius); padding: 30px; box-shadow: var(--shadow); border: 1px solid var(--border); animation: slideUp 0.4s; }
+        .num-text h3 { font-size: 20px; }
         
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .btn { background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 600; }
 
-        .inbox-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border); padding-bottom: 20px; margin-bottom: 20px; }
-        .back-btn { background: none; border: none; color: var(--text-light); font-size: 16px; cursor: pointer; font-weight: 600; }
-        .back-btn:hover { color: var(--primary); }
+        /* Inbox */
+        .inbox { display: none; background: var(--surface); padding: 30px; border-radius: var(--radius); border: 1px solid var(--border); }
+        .inbox-header { display: flex; justify-content: space-between; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 15px; }
         
-        .loading { text-align: center; padding: 40px; color: var(--primary); font-weight: 600; display: none; }
-        .loader-spinner { display: inline-block; width: 30px; height: 30px; border: 3px solid rgba(0,0,0,0.1); border-radius: 50%; border-top-color: var(--primary); animation: spin 1s ease-in-out infinite; margin-bottom: 10px; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-
+        .loader { display: none; text-align: center; padding: 30px; color: var(--primary); font-weight: 600; }
+        
         .msg-box { background: var(--bg); padding: 15px; border-radius: 10px; margin-bottom: 15px; border-left: 4px solid var(--primary); }
-        .msg-top { display: flex; justify-content: space-between; margin-bottom: 5px; }
-        .sender { font-weight: 600; }
-        .time { font-size: 12px; color: var(--text-light); }
-        .msg-text { color: var(--text); font-size: 14px; }
-
-        /* Toast */
-        .toast { position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%); background: #2b2b2b; color: #fff; padding: 12px 25px; border-radius: 30px; font-weight: 500; transition: 0.4s; z-index: 1000; }
-        .toast.show { bottom: 40px; }
-
-        @media(max-width: 600px) {
-            .number-card { flex-direction: column; align-items: flex-start; gap: 15px; }
-            .btn-copy { width: 100%; }
-        }
+        .msg-top { display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 13px; color: var(--text-light); }
+        .sender { font-weight: 600; color: var(--text); font-size: 15px; }
+        .msg-text { font-size: 14px; margin-top: 5px; }
+        .error-msg { color: #ef4444; text-align: center; padding: 20px; background: rgba(239, 68, 68, 0.1); border-radius: 8px; }
     </style>
 </head>
 <body>
 
     <header>
-        <div class="logo">💬 TempSMS Pro</div>
-        <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">🌙 Dark Mode</button>
+        <div class="logo">💬 Real TempSMS</div>
+        <button class="theme-btn" onclick="toggleTheme()">🌙 Dark Mode</button>
     </header>
 
     <div class="container">
-        <div class="alert">
-            ⚠️ <strong>UI Demo Only:</strong> These are dummy numbers for design testing. They will not receive real Telegram or WhatsApp OTPs.
-        </div>
-
         <div id="numbersView">
-            <h2 style="margin-bottom: 20px;">Select a Number</h2>
-            <div class="number-list" id="list"></div>
+            <h2>Select a Public Number</h2>
+            <p style="color: var(--text-light); margin-bottom: 20px;">Fetching real data via Public API Proxy.</p>
+            <div id="list"></div>
         </div>
 
         <div class="inbox" id="inboxView">
             <div class="inbox-header">
-                <button class="back-btn" onclick="goBack()">← Back</button>
+                <button class="btn" style="background: var(--bg); color: var(--text); border: 1px solid var(--border);" onclick="goBack()">← Back</button>
                 <h3 id="activeNumber">Number</h3>
-                <span style="font-size: 12px; color: var(--success);">● Receiving</span>
+                <button class="btn" onclick="fetchRealSMS(currentNumberClean)">🔄 Refresh</button>
             </div>
             
-            <div class="loading" id="loader">
-                <div class="loader-spinner"></div>
-                <p>Waiting for new SMS...</p>
-            </div>
-
+            <div class="loader" id="loader">⏳ Fetching real live SMS from network... Please wait.</div>
             <div id="messagesArea"></div>
         </div>
     </div>
 
-    <div class="toast" id="toast">Number Copied!</div>
-
     <script>
-        // Data
+        // Real public numbers that currently exist on receive-smss.com
         const numbers = [
-            { flag: '🇺🇸', num: '+1 917 555 0100', country: 'United States' },
-            { flag: '🇬🇧', num: '+44 7700 900077', country: 'United Kingdom' },
-            { flag: '🇮🇳', num: '+91 98765 00000', country: 'India' },
-            { flag: '🇨🇦', num: '+1 416 555 0198', country: 'Canada' }
+            { flag: '🇺🇸', num: '+1 201 500 0111', clean: '12015000111' },
+            { flag: '🇬🇧', num: '+44 748 888 2321', clean: '447488882321' },
+            { flag: '🇫🇷', num: '+33 757 130 111', clean: '33757130111' },
+            { flag: '🇸🇪', num: '+46 76 943 60 11', clean: '46769436011' }
         ];
 
-        // Theme
-        if(localStorage.getItem('theme') === 'dark') {
-            document.documentElement.setAttribute('data-theme', 'dark');
-            document.getElementById('themeBtn').innerText = '☀️ Light Mode';
-        }
-
-        function toggleTheme() {
-            if(document.documentElement.getAttribute('data-theme') === 'dark') {
-                document.documentElement.removeAttribute('data-theme');
-                localStorage.setItem('theme', 'light');
-                document.getElementById('themeBtn').innerText = '🌙 Dark Mode';
-            } else {
-                document.documentElement.setAttribute('data-theme', 'dark');
-                localStorage.setItem('theme', 'dark');
-                document.getElementById('themeBtn').innerText = '☀️ Light Mode';
-            }
-        }
+        let currentNumberClean = '';
 
         // Render Numbers
         const listDiv = document.getElementById('list');
         numbers.forEach(item => {
             listDiv.innerHTML += `
-                <div class="number-card" onclick="openInbox('${item.flag}', '${item.num}')">
+                <div class="number-card" onclick="openInbox('${item.flag}', '${item.num}', '${item.clean}')">
                     <div class="num-info">
                         <div class="flag">${item.flag}</div>
-                        <div class="num-text">
-                            <h3>${item.num}</h3>
-                            <p>● Active in ${item.country}</p>
-                        </div>
+                        <div class="num-text"><h3>${item.num}</h3></div>
                     </div>
-                    <button class="btn-copy" onclick="copyNum(event, '${item.num}')">Copy</button>
+                    <button class="btn">View Real SMS</button>
                 </div>
             `;
         });
 
-        // Copy
-        function copyNum(e, num) {
-            e.stopPropagation(); // Prevents opening inbox when clicking copy
-            navigator.clipboard.writeText(num);
-            const toast = document.getElementById('toast');
-            toast.innerText = `Copied: ${num}`;
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 2500);
-        }
+        function toggleTheme() { document.body.parentElement.toggleAttribute('data-theme'); }
 
-        // Inbox Logic
-        let refreshInterval;
-        const senders = ['Google', 'Amazon', 'Snapchat', 'Bank Alert', 'Uber'];
-
-        function openInbox(flag, num) {
+        function openInbox(flag, num, cleanNum) {
             document.getElementById('numbersView').style.display = 'none';
             document.getElementById('inboxView').style.display = 'block';
             document.getElementById('activeNumber').innerText = `${flag} ${num}`;
-            
+            currentNumberClean = cleanNum;
+            fetchRealSMS(cleanNum);
+        }
+
+        function goBack() {
+            document.getElementById('inboxView').style.display = 'none';
+            document.getElementById('numbersView').style.display = 'block';
+        }
+
+        // --- REAL API FETCH LOGIC (THE JUGAAD) ---
+        async function fetchRealSMS(cleanNum) {
             const msgArea = document.getElementById('messagesArea');
             const loader = document.getElementById('loader');
             
             msgArea.innerHTML = '';
             loader.style.display = 'block';
 
-            // Simulate fetching data
-            setTimeout(() => {
+            try {
+                // Target URL of a real public SMS site
+                const targetUrl = `https://receive-smss.com/sms/${cleanNum}/`;
+                // Free CORS Proxy to allow our GitHub HTML to read their data
+                const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`;
+
+                const response = await fetch(proxyUrl);
+                const data = await response.json();
+                
+                // Read the HTML returned by the proxy
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(data.contents, "text/html");
+
+                // Scrape the messages based on the target site's HTML structure
+                // receive-smss.com uses rows with specific columns
+                const rows = doc.querySelectorAll('.message-row');
+                
                 loader.style.display = 'none';
-                addRandomMessage();
-                addRandomMessage();
-            }, 1000);
 
-            // Auto fetch new fake messages
-            refreshInterval = setInterval(() => {
-                if(Math.random() > 0.5) addRandomMessage();
-            }, 6000);
-        }
+                if(rows.length === 0) {
+                    msgArea.innerHTML = `<div class="error-msg">❌ No new messages found or the public number is currently offline.</div>`;
+                    return;
+                }
 
-        function goBack() {
-            document.getElementById('inboxView').style.display = 'none';
-            document.getElementById('numbersView').style.display = 'block';
-            clearInterval(refreshInterval);
-        }
+                rows.forEach(row => {
+                    const sender = row.querySelector('.sender-column')?.innerText.trim() || 'Unknown';
+                    const text = row.querySelector('.message-text-column')?.innerText.trim() || 'No Text';
+                    const time = row.querySelector('.time-column')?.innerText.trim() || 'Just now';
 
-        function addRandomMessage() {
-            const sender = senders[Math.floor(Math.random() * senders.length)];
-            const otp = Math.floor(100000 + Math.random() * 900000);
-            const now = new Date();
-            const time = now.getHours() + ':' + now.getMinutes().toString().padStart(2, '0');
-            
-            const html = `
-                <div class="msg-box" style="animation: slideUp 0.3s;">
-                    <div class="msg-top">
-                        <span class="sender">${sender}</span>
-                        <span class="time">${time}</span>
-                    </div>
-                    <div class="msg-text">Your verification code is <strong>${otp}</strong>. Do not share this with anyone.</div>
-                </div>
-            `;
-            document.getElementById('messagesArea').insertAdjacentHTML('afterbegin', html);
+                    msgArea.innerHTML += `
+                        <div class="msg-box">
+                            <div class="msg-top">
+                                <span class="sender">${sender}</span>
+                                <span>${time}</span>
+                            </div>
+                            <div class="msg-text">${text}</div>
+                        </div>
+                    `;
+                });
+
+            } catch (error) {
+                loader.style.display = 'none';
+                msgArea.innerHTML = `<div class="error-msg">⚠️ Failed to connect to Public API. The Proxy might be overloaded. Try again later.</div>`;
+            }
         }
     </script>
 </body>
