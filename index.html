@@ -3,134 +3,172 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stealth TempSMS - Undetectable</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <title>Stealth Temp SMS - Pro Edition</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        :root { --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --primary: #38bdf8; --border: #334155; }
+        :root {
+            --primary: #3b82f6; --bg: #0f172a; --card: #1e293b;
+            --text: #f8fafc; --text-dim: #94a3b8; --border: #334155;
+        }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-        body { background: var(--bg); color: var(--text); padding: 20px; }
-        .container { max-width: 800px; margin: 0 auto; }
-        header { text-align: center; margin-bottom: 40px; border-bottom: 2px solid var(--border); padding-bottom: 20px; }
-        .logo { color: var(--primary); font-size: 28px; font-weight: 700; }
+        body { background-color: var(--bg); color: var(--text); line-height: 1.6; }
+        .container { max-width: 800px; margin: 0 auto; padding: 20px; }
         
-        .num-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
-        .card { background: var(--card); border: 1px solid var(--border); padding: 20px; border-radius: 12px; cursor: pointer; transition: 0.3s; }
-        .card:hover { border-color: var(--primary); transform: translateY(-5px); }
+        header { text-align: center; padding: 40px 0; border-bottom: 1px solid var(--border); margin-bottom: 30px; }
+        .logo { font-size: 32px; font-weight: 700; color: var(--primary); letter-spacing: -1px; }
         
-        .inbox { display: none; background: var(--card); padding: 25px; border-radius: 15px; border: 1px solid var(--border); }
-        .msg-item { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; margin-bottom: 12px; border-left: 4px solid var(--primary); }
-        .loader { text-align: center; display: none; padding: 20px; color: var(--primary); }
-        .btn { background: var(--primary); color: #000; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; margin-bottom: 20px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+        .card { 
+            background: var(--card); border: 1px solid var(--border); padding: 25px; 
+            border-radius: 16px; cursor: pointer; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .card:hover { transform: translateY(-5px); border-color: var(--primary); box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.2); }
+        .card h3 { font-size: 14px; color: var(--text-dim); text-transform: uppercase; margin-bottom: 10px; }
+        .card p { font-size: 22px; font-weight: 600; }
+
+        .inbox { display: none; background: var(--card); padding: 30px; border-radius: 20px; border: 1px solid var(--border); animation: slideIn 0.4s ease; }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .btn-back { background: transparent; color: var(--primary); border: 1px solid var(--primary); padding: 10px 20px; border-radius: 8px; cursor: pointer; margin-bottom: 20px; font-weight: 600; }
+        .btn-back:hover { background: var(--primary); color: white; }
+
+        .loader { text-align: center; padding: 40px; display: none; }
+        .spinner { width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.1); border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 15px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .msg { background: rgba(255,255,255,0.03); padding: 20px; border-radius: 12px; margin-bottom: 15px; border-left: 4px solid var(--primary); }
+        .msg-meta { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 8px; font-weight: 600; color: var(--primary); }
+        .msg-body { font-size: 15px; color: var(--text); }
+        
+        .error-box { 
+            background: rgba(239, 68, 68, 0.1); border: 1px dashed #ef4444; 
+            color: #fca5a5; padding: 20px; border-radius: 12px; text-align: center; 
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
     <header>
-        <div class="logo">🥷 Stealth SMS Pro</div>
-        <p>Bypassing detection with Smart Scraper Technology</p>
+        <div class="logo">🚀 Stealth SMS Pro</div>
+        <p style="color: var(--text-dim)">Advanced Multi-Proxy Live SMS Scraper</p>
     </header>
 
-    <div id="mainView">
-        <div class="num-grid" id="numberGrid"></div>
+    <div id="mainGrid" class="grid">
+        <div class="card" onclick="openInbox('+91 91234 56789', '919123456789')">
+            <h3>🇮🇳 India</h3>
+            <p>+91 91234 56789</p>
+        </div>
+        <div class="card" onclick="openInbox('+92 300 1234567', '923001234567')">
+            <h3>🇵🇰 Pakistan</h3>
+            <p>+92 300 1234567</p>
+        </div>
+        <div class="card" onclick="openInbox('+1 201 500 0111', '12015000111')">
+            <h3>🇺🇸 USA</h3>
+            <p>+1 201 500 0111</p>
+        </div>
     </div>
 
     <div id="inboxView" class="inbox">
-        <button class="btn" onclick="showMain()">← Back to List</button>
-        <h3 id="displayNum" style="margin-bottom: 20px;"></h3>
-        <div id="loader" class="loader">⚙️ Stealth Mode Active: Bypassing Security...</div>
-        <div id="messages"></div>
+        <button class="btn-back" onclick="showMain()">← Back to Numbers</button>
+        <h2 id="activeNum" style="margin-bottom: 25px;"></h2>
+        
+        <div id="loader" class="loader">
+            <div class="spinner"></div>
+            <p id="status">Connecting to Secure Tunnel...</p>
+        </div>
+
+        <div id="messageList"></div>
     </div>
 </div>
 
 <script>
-    const numbers = [
-        { country: 'USA', num: '+1 201 500 0111', id: '12015000111' },
-        { country: 'UK', num: '+44 748 888 2321', id: '447488882321' },
-        { country: 'India', num: '+91 912 345 6789', id: '919123456789' }
+    const proxies = [
+        (url) => `https://api.allorigins.win/get?url=${encodeURIComponent(url)}&t=${Date.now()}`,
+        (url) => `https://corsproxy.io/?${encodeURIComponent(url)}`,
+        (url) => `https://thingproxy.freeboard.io/fetch/${url}`
     ];
-
-    // --- STEALTH CONFIG ---
-    // In random User-Agents se website ko lagega ki alag-alag log aa rahe hain
-    const userAgents = [
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36",
-        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36",
-        "Mozilla/5.0 (iPhone; CPU iPhone OS 17_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.1 Mobile/15E148 Safari/604.1"
-    ];
-
-    function renderNumbers() {
-        const grid = document.getElementById('numberGrid');
-        numbers.forEach(n => {
-            grid.innerHTML += `<div class="card" onclick="openInbox('${n.num}', '${n.id}')">
-                <h3>${n.country}</h3>
-                <p style="font-size: 20px; margin-top: 10px;">${n.num}</p>
-            </div>`;
-        });
-    }
-
-    async function openInbox(num, id) {
-        document.getElementById('mainView').style.display = 'none';
-        document.getElementById('inboxView').style.display = 'block';
-        document.getElementById('displayNum').innerText = "Inbox: " + num;
-        fetchSMSStealth(id);
-    }
 
     function showMain() {
         document.getElementById('inboxView').style.display = 'none';
-        document.getElementById('mainView').style.display = 'block';
+        document.getElementById('mainGrid').style.display = 'grid';
     }
 
-    async function fetchSMSStealth(cleanNum) {
-        const msgDiv = document.getElementById('messages');
+    async function openInbox(displayNum, cleanNum) {
+        document.getElementById('mainGrid').style.display = 'none';
+        const inbox = document.getElementById('inboxView');
+        inbox.style.display = 'block';
+        document.getElementById('activeNum').innerText = "Inbox: " + displayNum;
+        
+        await fetchSMS(cleanNum);
+    }
+
+    async function fetchSMS(id) {
+        const list = document.getElementById('messageList');
         const loader = document.getElementById('loader');
-        msgDiv.innerHTML = '';
+        const status = document.getElementById('status');
+        
+        list.innerHTML = '';
         loader.style.display = 'block';
 
-        const targetUrl = `https://receive-smss.com/sms/${cleanNum}/`;
-        
-        // --- STEALTH LOGIC START ---
-        // Hum Proxy ko use karke Headers bhej rahe hain taaki detect na ho
-        const randomUA = userAgents[Math.floor(Math.random() * userAgents.length)];
-        
-        // Multi-Proxy Fallback
-        const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}&timestamp=${new Date().getTime()}`;
+        const target = `https://receive-smss.com/sms/${id}/`;
+        let success = false;
 
-        try {
-            const response = await fetch(proxyUrl);
-            const data = await response.json();
-            const htmlText = data.contents;
+        // Multi-Proxy Attempt Logic
+        for (let i = 0; i < proxies.length; i++) {
+            try {
+                status.innerText = `Trying Proxy Route ${i + 1}...`;
+                const response = await fetch(proxies[i](target));
+                
+                if (!response.ok) throw new Error();
 
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(htmlText, "text/html");
-            const rows = doc.querySelectorAll('.message-row');
+                let html;
+                if (i === 0) { // AllOrigins returns JSON
+                    const data = await response.json();
+                    html = data.contents;
+                } else {
+                    html = await response.text();
+                }
 
-            loader.style.display = 'none';
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, "text/html");
+                const rows = doc.querySelectorAll('.message-row');
 
-            if(rows.length === 0) {
-                msgDiv.innerHTML = "<p style='color: #ef4444;'>Security Bypass Failed. Target site detected the proxy. Use a Backend Server for 100% stealth.</p>";
-                return;
+                if (rows.length > 0) {
+                    loader.style.display = 'none';
+                    rows.forEach(row => {
+                        const sender = row.querySelector('.sender-column')?.innerText.trim() || "Unknown";
+                        const text = row.querySelector('.message-text-column')?.innerText.trim() || "No content";
+                        const time = row.querySelector('.time-column')?.innerText.trim() || "Recent";
+
+                        list.innerHTML += `
+                            <div class="msg">
+                                <div class="msg-meta"><span>${sender}</span><span>${time}</span></div>
+                                <div class="msg-body">${text}</div>
+                            </div>
+                        `;
+                    });
+                    success = true;
+                    break; 
+                }
+            } catch (e) {
+                console.log(`Route ${i+1} blocked.`);
             }
+        }
 
-            rows.forEach(row => {
-                const sender = row.querySelector('.sender-column')?.innerText.trim();
-                const text = row.querySelector('.message-text-column')?.innerText.trim();
-                const time = row.querySelector('.time-column')?.innerText.trim();
-
-                msgDiv.innerHTML += `<div class="msg-item">
-                    <div style="display:flex; justify-content:space-between; font-size: 13px; color: var(--primary);">
-                        <b>${sender}</b> <span>${time}</span>
-                    </div>
-                    <p style="margin-top:5px;">${text}</p>
-                </div>`;
-            });
-
-        } catch (e) {
+        if (!success) {
             loader.style.display = 'none';
-            msgDiv.innerHTML = "<p style='color: #ef4444;'>Connection Blocked by Target Firewall.</p>";
+            list.innerHTML = `
+                <div class="error-box">
+                    <h3>🛑 Security Bypass Failed</h3>
+                    <p style="margin-top:10px; font-size:14px;">
+                        Target site detected the proxy. Is problem ko hamesha ke liye theek karne ke liye **Backend Server (Node.js)** zaroori hai.
+                    </p>
+                    <button class="btn-back" style="margin-top:15px;" onclick="location.reload()">Try Again</button>
+                </div>
+            `;
         }
     }
-
-    renderNumbers();
 </script>
 
 </body>
