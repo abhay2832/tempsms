@@ -3,145 +3,538 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Live Temp SMS - One Page</title>
+    <title>Free Temp SMS</title>
     <style>
+        /* CSS Variables for Light/Dark Mode */
+        :root {
+            --bg-color: #f0f2f5;
+            --text-color: #333;
+            --card-bg: #ffffff;
+            --primary-color: #007bff;
+            --primary-hover: #0056b3;
+            --border-color: #e1e4e8;
+            --shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            --danger-bg: #fff3f3;
+            --danger-text: #dc3545;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #121212;
+            --text-color: #e0e0e0;
+            --card-bg: #1e1e1e;
+            --primary-color: #3b82f6;
+            --primary-hover: #2563eb;
+            --border-color: #333;
+            --shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            --danger-bg: #2d1a1a;
+            --danger-text: #ff6b6b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f2f5;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        /* Header Navigation */
+        header {
+            background-color: var(--card-bg);
+            box-shadow: var(--shadow);
+            padding: 15px 5%;
             display: flex;
-            justify-content: center;
-            padding: 20px;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
-        .container {
-            background: white;
-            width: 100%;
-            max-width: 600px;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
-        h2 { text-align: center; color: #333; }
-        .input-group { margin-bottom: 20px; }
-        input[type="text"] {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            font-size: 16px;
-            box-sizing: border-box;
-            margin-bottom: 10px;
+
+        nav {
+            display: flex;
+            gap: 20px;
+            align-items: center;
         }
-        button {
-            width: 100%;
-            padding: 12px;
-            background-color: #28a745;
-            color: white;
+
+        nav a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 500;
+        }
+
+        nav a:hover {
+            color: var(--primary-color);
+        }
+
+        .theme-toggle {
+            background: none;
             border: none;
-            border-radius: 6px;
-            font-size: 16px;
             cursor: pointer;
+            font-size: 20px;
+            color: var(--text-color);
+        }
+
+        /* Main Content */
+        main {
+            max-width: 1000px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        /* Notice Area */
+        .notice {
+            background-color: var(--danger-bg);
+            color: var(--danger-text);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 25px;
+            font-weight: 500;
+            border-left: 5px solid var(--danger-text);
+        }
+
+        /* Search Bar */
+        .search-container {
+            margin-bottom: 30px;
+        }
+
+        .search-container input {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            font-size: 16px;
+            outline: none;
+        }
+
+        .search-container input:focus {
+            border-color: var(--primary-color);
+        }
+
+        /* Numbers Grid */
+        .numbers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .number-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .number-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 20px;
             font-weight: bold;
         }
-        button:hover { background-color: #218838; }
-        #loading { text-align: center; display: none; color: #007bff; font-weight: bold; margin-top: 15px; }
-        .inbox { margin-top: 20px; }
-        .msg-box {
-            background: #f8f9fa;
-            border-left: 5px solid #007bff;
-            padding: 15px;
-            margin-bottom: 10px;
-            border-radius: 5px;
+
+        .country-flag {
+            font-size: 24px;
         }
-        .msg-sender { font-weight: bold; color: #333; }
-        .msg-text { margin-top: 5px; color: #555; }
+
+        .card-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+            transition: transform 0.1s, background-color 0.2s;
+        }
+
+        .btn:active {
+            transform: scale(0.95);
+        }
+
+        .btn-copy {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-copy:hover {
+            background-color: #e2e6ea;
+            color: #333;
+        }
+
+        [data-theme="dark"] .btn-copy:hover {
+            background-color: #333;
+            color: #fff;
+        }
+
+        .btn-view {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-view:hover {
+            background-color: var(--primary-hover);
+        }
+
+        /* Inbox Section (Modal) */
+        .inbox-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(4px);
+        }
+
+        .inbox-content {
+            background-color: var(--card-bg);
+            width: 90%;
+            max-width: 600px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .inbox-header {
+            padding: 20px;
+            background-color: var(--primary-color);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .messages-list {
+            padding: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+            background-color: var(--bg-color);
+        }
+
+        .message-item {
+            background-color: var(--card-bg);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--primary-color);
+            box-shadow: var(--shadow);
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .msg-top {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .msg-sender {
+            font-weight: bold;
+            color: var(--text-color);
+        }
+
+        .msg-time {
+            color: #888;
+        }
+
+        .msg-body {
+            color: var(--text-color);
+            font-size: 15px;
+        }
+
+        /* Toast Notification */
+        .toast {
+            visibility: hidden;
+            min-width: 250px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 8px;
+            padding: 16px;
+            position: fixed;
+            z-index: 1001;
+            left: 50%;
+            bottom: 30px;
+            transform: translateX(-50%);
+            font-size: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .toast.show {
+            visibility: visible;
+            animation: fadein 0.5s, fadeout 0.5s 2.5s;
+        }
+
+        @keyframes fadein {
+            from { bottom: 0; opacity: 0; } 
+            to { bottom: 30px; opacity: 1; }
+        }
+
+        @keyframes fadeout {
+            from { bottom: 30px; opacity: 1; } 
+            to { bottom: 0; opacity: 0; }
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-color);
+            margin-top: 40px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            nav { display: none; }
+            .theme-toggle { display: block; }
+        }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h2>📡 Live OTP Fetcher</h2>
-    
-    <div class="input-group">
-        <label>Enter Target Public Number (without +):</label>
-        <input type="text" id="targetNumber" placeholder="e.g., 447123456789">
-        <button onclick="fetchSMS()">Fetch Latest SMS</button>
+    <header>
+        <a href="#" class="logo">💬 Free Temp SMS</a>
+        <nav>
+            <a href="#">Home</a>
+            <a href="#">Numbers</a>
+            <a href="#">About</a>
+            <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🌙</button>
+        </nav>
+    </header>
+
+    <main>
+        <div class="notice">
+            ⚠️ <strong>Notice:</strong> These numbers are public and should not be used for sensitive accounts or private information.
+        </div>
+
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Search by country or number..." onkeyup="filterNumbers()">
+        </div>
+
+        <div class="numbers-grid" id="numbersGrid">
+            </div>
+    </main>
+
+    <div class="inbox-modal" id="inboxModal">
+        <div class="inbox-content">
+            <div class="inbox-header">
+                <div>
+                    <h3 id="modalNumberTitle">Inbox</h3>
+                    <small>Auto-refreshing every 5 seconds...</small>
+                </div>
+                <button class="close-btn" onclick="closeInbox()">&times;</button>
+            </div>
+            <div class="messages-list" id="messagesList">
+                </div>
+        </div>
     </div>
 
-    <div id="loading">⏳ Data nikal raha hai, please wait...</div>
+    <div id="toast" class="toast">Number Copied!</div>
 
-    <div class="inbox" id="smsContainer">
-        </div>
-</div>
+    <footer>
+        © 2026 Free Temp SMS
+    </footer>
 
-<script>
-    async function fetchSMS() {
-        const number = document.getElementById('targetNumber').value.trim();
-        const container = document.getElementById('smsContainer');
-        const loading = document.getElementById('loading');
-        
-        if (!number) {
-            alert("Bhai, pehle koi number toh daalo!");
-            return;
+    <script>
+        // 1. Theme Toggling Logic
+        const themeBtn = document.getElementById('themeBtn');
+        const currentTheme = localStorage.getItem('theme');
+
+        if (currentTheme === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            themeBtn.innerText = '☀️';
         }
 
-        // UI Updates
-        container.innerHTML = "";
-        loading.style.display = "block";
+        function toggleTheme() {
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            if (isDark) {
+                document.documentElement.removeAttribute('data-theme');
+                localStorage.setItem('theme', 'light');
+                themeBtn.innerText = '🌙';
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+                themeBtn.innerText = '☀️';
+            }
+        }
 
-        try {
-            // Yahan hum kisi public site (jaise receive-smss) ka URL target kar rahe hain
-            const targetSiteUrl = `https://receive-smss.com/sms/${number}/`;
+        // 2. Data Structure
+        const phoneNumbers = [
+            { country: 'USA', flag: '🇺🇸', number: '+1 917 000 1234' },
+            { country: 'UK', flag: '🇬🇧', number: '+44 7700 900123' },
+            { country: 'India', flag: '🇮🇳', number: '+91 90000 00000' },
+            { country: 'Germany', flag: '🇩🇪', number: '+49 1512 345678' },
+            { country: 'Canada', flag: '🇨🇦', number: '+1 416 555 0000' }
+        ];
+
+        const sampleSenders = ['Amazon', 'Google', 'Telegram', 'WhatsApp', 'Facebook', 'Bank', 'Uber'];
+        
+        // 3. Render Numbers
+        const grid = document.getElementById('numbersGrid');
+
+        function renderNumbers(list) {
+            grid.innerHTML = '';
+            list.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'number-card';
+                card.innerHTML = `
+                    <div class="number-header">
+                        <span class="country-flag">${item.flag} ${item.country}</span>
+                    </div>
+                    <div style="font-size: 22px; font-weight: 500; letter-spacing: 1px;">
+                        ${item.number}
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn btn-copy" onclick="copyText('${item.number}')">Copy Number</button>
+                        <button class="btn btn-view" onclick="openInbox('${item.number}', '${item.flag}')">View SMS</button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+        renderNumbers(phoneNumbers);
+
+        // 4. Search Filter
+        function filterNumbers() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = phoneNumbers.filter(item => 
+                item.country.toLowerCase().includes(query) || 
+                item.number.includes(query)
+            );
+            renderNumbers(filtered);
+        }
+
+        // 5. Copy & Toast Notification
+        function copyText(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                const toast = document.getElementById("toast");
+                toast.innerText = `Copied: ${text}`;
+                toast.className = "toast show";
+                setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 3000);
+            });
+        }
+
+        // 6. Inbox & Auto Refresh Logic
+        const modal = document.getElementById('inboxModal');
+        const msgList = document.getElementById('messagesList');
+        let refreshInterval;
+
+        function generateRandomMessage() {
+            const sender = sampleSenders[Math.floor(Math.random() * sampleSenders.length)];
+            const otp = Math.floor(100000 + Math.random() * 900000);
+            const msgs = [
+                `Your verification code is ${otp}. Don't share this.`,
+                `Use ${otp} to log in to your account.`,
+                `Your confirmation PIN is ${otp}.`,
+                `Verification code: ${otp}. Valid for 5 minutes.`
+            ];
+            const body = msgs[Math.floor(Math.random() * msgs.length)];
             
-            // CORS bypass karne ke liye Free Proxy API ka use
-            const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetSiteUrl)}`;
+            // Format time as HH:MM
+            const now = new Date();
+            const timeStr = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
 
-            const response = await fetch(proxyUrl);
-            const data = await response.json();
+            return { sender, body, time: timeStr };
+        }
+
+        function addMessageToUI(msg) {
+            const div = document.createElement('div');
+            div.className = 'message-item';
+            div.innerHTML = `
+                <div class="msg-top">
+                    <span class="msg-sender">${msg.sender}</span>
+                    <span class="msg-time">${msg.time}</span>
+                </div>
+                <div class="msg-body">${msg.body}</div>
+            `;
+            msgList.prepend(div); // Add new messages to the top
+        }
+
+        function openInbox(number, flag) {
+            document.getElementById('modalNumberTitle').innerText = `${flag} Inbox: ${number}`;
+            msgList.innerHTML = ''; // Clear old messages
             
-            // Target website ka pura HTML code humein mil gaya
-            const htmlText = data.contents;
-
-            // HTML ko parse karne ka tareeka (Browser ke andar hi)
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(htmlText, 'text/html');
-
-            // Ab HTML mein se data nikalna (Note: Target site ke class name ke hisaab se)
-            // Example ke taur par main yahan generic row dhundh raha hu
-            const messageRows = doc.querySelectorAll('.message-row'); 
-
-            loading.style.display = "none";
-
-            if (messageRows.length === 0) {
-                container.innerHTML = `<div class="msg-box" style="border-left-color: red;">
-                    Koi naya message nahi mila ya target website ne format change kar diya hai.
-                </div>`;
-                return;
+            // Generate initial messages
+            for(let i=0; i<3; i++) {
+                addMessageToUI(generateRandomMessage());
             }
 
-            // Har message ko UI mein dikhana
-            messageRows.forEach(row => {
-                // In classes ko target website ke hisaab se adjust karna padta hai
-                const sender = row.querySelector('.sender-column')?.innerText || "Unknown";
-                const text = row.querySelector('.message-text-column')?.innerText || "No text";
-                
-                const msgDiv = document.createElement('div');
-                msgDiv.className = 'msg-box';
-                msgDiv.innerHTML = `
-                    <div class="msg-sender">From: ${sender}</div>
-                    <div class="msg-text">${text}</div>
-                `;
-                container.appendChild(msgDiv);
-            });
+            modal.style.display = 'flex';
 
-        } catch (error) {
-            loading.style.display = "none";
-            container.innerHTML = `<div class="msg-box" style="border-left-color: red;">
-                Error: Data nikalne mein problem aayi. Target site ne block kar diya hoga.
-            </div>`;
-            console.error(error);
+            // Auto refresh every 5 seconds (simulating new SMS)
+            refreshInterval = setInterval(() => {
+                // 30% chance to get a new message every 5 seconds to make it look natural
+                if(Math.random() > 0.7) {
+                    addMessageToUI(generateRandomMessage());
+                }
+            }, 5000);
         }
-    }
-</script>
 
+        function closeInbox() {
+            modal.style.display = 'none';
+            clearInterval(refreshInterval);
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                closeInbox();
+            }
+        }
+    </script>
 </body>
 </html>
