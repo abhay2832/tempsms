@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temp SMS - Receive OTP Online</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            background-color: #ffffff;
+            width: 100%;
+            max-width: 600px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            padding: 30px;
+            box-sizing: border-box;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-top: 0;
+        }
+        .control-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: bold;
+        }
+        select, input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        .number-display {
+            display: flex;
+            gap: 10px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .inbox {
+            margin-top: 30px;
+            border-top: 2px solid #eee;
+            padding-top: 20px;
+        }
+        .message-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .message-item {
+            background-color: #f9f9f9;
+            border-left: 4px solid #007bff;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+        .message-sender {
+            font-weight: bold;
+            color: #333;
+            font-size: 14px;
+        }
+        .message-time {
+            color: #888;
+            font-size: 12px;
+            float: right;
+        }
+        .message-body {
+            margin-top: 8px;
+            color: #555;
+            font-size: 15px;
+        }
+        .refresh-btn {
+            width: 100%;
+            background-color: #28a745;
+            margin-top: 15px;
+        }
+        .refresh-btn:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>📱 Temp SMS Receiver</h1>
+    
+    <div class="control-group">
+        <label for="countrySelect">Select Country:</label>
+        <select id="countrySelect" onchange="changeNumber()">
+            <option value="india">🇮🇳 India (+91)</option>
+            <option value="pakistan">🇵🇰 Pakistan (+92)</option>
+        </select>
+    </div>
+
+    <div class="control-group">
+        <label>Your Temporary Number:</label>
+        <div class="number-display">
+            <input type="text" id="phoneNumber" value="+91 98765 43210" readonly>
+            <button onclick="copyNumber()">Copy</button>
+        </div>
+    </div>
+
+    <div class="inbox">
+        <h3>📥 SMS Inbox</h3>
+        <ul class="message-list" id="inboxMessages">
+            <li class="message-item">
+                <span class="message-sender">System</span>
+                <span class="message-time">Just now</span>
+                <div class="message-body">Waiting for new SMS... Refresh the page to check.</div>
+            </li>
+        </ul>
+        <button class="refresh-btn" onclick="fetchNewSMS()">🔄 Refresh Inbox</button>
+    </div>
+</div>
+
+<script>
+    // Dummy numbers for UI testing
+    const numbers = {
+        'india': '+91 98765 43210',
+        'pakistan': '+92 300 1234567'
+    };
+
+    // Function to change number when country is selected
+    function changeNumber() {
+        const country = document.getElementById('countrySelect').value;
+        document.getElementById('phoneNumber').value = numbers[country];
+        
+        // Clear inbox when number changes
+        document.getElementById('inboxMessages').innerHTML = `
+            <li class="message-item">
+                <span class="message-sender">System</span>
+                <span class="message-time">Just now</span>
+                <div class="message-body">Number changed. Waiting for new SMS on ${numbers[country]}...</div>
+            </li>
+        `;
+    }
+
+    // Function to copy the number
+    function copyNumber() {
+        const numberInput = document.getElementById('phoneNumber');
+        numberInput.select();
+        numberInput.setSelectionRange(0, 99999); // For mobile devices
+        document.execCommand("copy");
+        alert("Number Copied: " + numberInput.value);
+    }
+
+    // Function to simulate fetching new SMS (Mock Backend)
+    function fetchNewSMS() {
+        const inbox = document.getElementById('inboxMessages');
+        const now = new Date();
+        const timeString = now.getHours() + ":" + String(now.getMinutes()).padStart(2, '0');
+        
+        // Generate a random 6-digit OTP
+        const randomOTP = Math.floor(100000 + Math.random() * 900000);
+        const services = ['Amazon', 'Facebook', 'WhatsApp', 'Instagram', 'Bank'];
+        const randomService = services[Math.floor(Math.random() * services.length)];
+
+        const newMessage = `
+            <li class="message-item">
+                <span class="message-sender">${randomService}</span>
+                <span class="message-time">${timeString}</span>
+                <div class="message-body">Your verification code is: <strong>${randomOTP}</strong>. Do not share this with anyone.</div>
+            </li>
+        `;
+
+        // Add new message to the top
+        inbox.innerHTML = newMessage + inbox.innerHTML;
+    }
+</script>
+
+</body>
+</html>
