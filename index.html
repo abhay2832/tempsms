@@ -3,55 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TempSMS Free - Receive SMS Online</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>TempSMS Pro - Demo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* CSS Variables for Theme */
         :root {
-            --bg-body: #f3f4f6;
-            --bg-surface: #ffffff;
-            --text-main: #111827;
-            --text-muted: #6b7280;
-            --primary: #3b82f6;
-            --primary-hover: #2563eb;
-            --border: #e5e7eb;
+            --bg: #f8f9fa;
+            --surface: #ffffff;
+            --text: #2b2b2b;
+            --text-light: #6c757d;
+            --primary: #4361ee;
+            --primary-hover: #3a56d4;
+            --border: #e9ecef;
             --success: #10b981;
-            --danger: #ef4444;
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            --radius: 12px;
+            --radius: 16px;
+            --shadow: 0 10px 30px rgba(0,0,0,0.05);
         }
 
         [data-theme="dark"] {
-            --bg-body: #111827;
-            --bg-surface: #1f2937;
-            --text-main: #f9fafb;
-            --text-muted: #9ca3af;
-            --border: #374151;
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+            --bg: #121212;
+            --surface: #1e1e1e;
+            --text: #f8f9fa;
+            --text-light: #adb5bd;
+            --primary: #4cc9f0;
+            --primary-hover: #3ab0d3;
+            --border: #2b2b2b;
+            --shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; transition: 0.3s; font-family: 'Poppins', sans-serif; }
+        body { background: var(--bg); color: var(--text); padding-bottom: 50px; }
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-body);
-            color: var(--text-main);
-            line-height: 1.5;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-
-        /* Header */
         header {
-            background-color: var(--bg-surface);
-            border-bottom: 1px solid var(--border);
-            padding: 15px 5%;
+            background: var(--surface);
+            padding: 20px 5%;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -60,514 +45,204 @@
             z-index: 100;
         }
 
-        .brand {
-            display: flex;
-            flex-direction: column;
-        }
+        .logo { font-size: 24px; font-weight: 700; color: var(--primary); display: flex; align-items: center; gap: 8px; }
+        .theme-btn { background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: 500; }
 
-        .brand h1 {
-            font-size: 22px;
-            color: var(--primary);
-            font-weight: 700;
-            letter-spacing: -0.5px;
-        }
+        .container { max-width: 900px; margin: 40px auto; padding: 0 20px; }
+        
+        .alert { background: rgba(239, 68, 68, 0.1); color: #ef4444; padding: 15px; border-radius: 10px; margin-bottom: 30px; font-size: 14px; text-align: center; border: 1px solid rgba(239, 68, 68, 0.2); }
 
-        .brand p {
-            font-size: 13px;
-            color: var(--text-muted);
-        }
-
-        .theme-toggle {
-            background: var(--bg-body);
-            border: 1px solid var(--border);
-            color: var(--text-main);
-            padding: 8px 12px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 16px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .theme-toggle:hover {
-            border-color: var(--primary);
-        }
-
-        /* Main Container */
-        main {
-            flex: 1;
-            max-width: 1000px;
-            margin: 30px auto;
-            padding: 0 20px;
-            width: 100%;
-        }
-
-        .section-title {
-            margin-bottom: 20px;
-            font-size: 20px;
-            font-weight: 600;
-        }
-
-        /* Numbers Grid */
-        .numbers-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-        }
+        .number-list { display: flex; flex-direction: column; gap: 15px; }
 
         .number-card {
-            background-color: var(--bg-surface);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 20px;
-            box-shadow: var(--shadow);
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
+            background: var(--surface); padding: 20px; border-radius: var(--radius);
+            box-shadow: var(--shadow); display: flex; justify-content: space-between;
+            align-items: center; border: 1px solid var(--border);
+            cursor: pointer; position: relative; overflow: hidden;
         }
+        
+        .number-card:hover { transform: translateY(-3px); border-color: var(--primary); }
+        
+        .num-info { display: flex; align-items: center; gap: 15px; }
+        .flag { font-size: 30px; }
+        .num-text h3 { font-size: 20px; letter-spacing: 1px; }
+        .num-text p { font-size: 13px; color: var(--success); font-weight: 500; }
 
-        .number-card:hover {
-            transform: translateY(-3px);
-            border-color: var(--primary);
+        .btn-copy {
+            background: var(--bg); border: 1px solid var(--border); color: var(--text);
+            padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 600;
         }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 18px;
-            font-weight: 600;
-        }
-
-        .phone-display {
-            font-size: 26px;
-            font-weight: 700;
-            letter-spacing: 1px;
-            text-align: center;
-            margin: 10px 0;
-            color: var(--text-main);
-        }
-
-        .card-actions {
-            display: flex;
-            gap: 10px;
-        }
-
-        button {
-            font-family: 'Inter', sans-serif;
-            font-weight: 600;
-            border: none;
-            border-radius: 8px;
-            padding: 12px;
-            cursor: pointer;
-            font-size: 14px;
-            flex: 1;
-        }
-
-        button:active {
-            transform: scale(0.96);
-        }
-
-        .btn-outline {
-            background-color: transparent;
-            border: 2px solid var(--border);
-            color: var(--text-main);
-        }
-
-        .btn-outline:hover {
-            background-color: var(--bg-body);
-        }
-
-        .btn-primary {
-            background-color: var(--primary);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background-color: var(--primary-hover);
-        }
+        .btn-copy:hover { background: var(--primary); color: #fff; border-color: var(--primary); }
 
         /* Inbox Section */
-        #inbox-section {
-            display: none;
-            animation: fadeIn 0.4s ease;
-        }
+        .inbox { display: none; background: var(--surface); border-radius: var(--radius); padding: 30px; box-shadow: var(--shadow); border: 1px solid var(--border); animation: slideUp 0.4s; }
+        
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        .inbox-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border); padding-bottom: 20px; margin-bottom: 20px; }
+        .back-btn { background: none; border: none; color: var(--text-light); font-size: 16px; cursor: pointer; font-weight: 600; }
+        .back-btn:hover { color: var(--primary); }
+        
+        .loading { text-align: center; padding: 40px; color: var(--primary); font-weight: 600; display: none; }
+        .loader-spinner { display: inline-block; width: 30px; height: 30px; border: 3px solid rgba(0,0,0,0.1); border-radius: 50%; border-top-color: var(--primary); animation: spin 1s ease-in-out infinite; margin-bottom: 10px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
-        .inbox-header-controls {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-
-        .back-btn {
-            background: transparent;
-            border: none;
-            color: var(--primary);
-            font-size: 16px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            padding: 0;
-            flex: none;
-        }
-
-        .back-btn:hover {
-            text-decoration: underline;
-        }
-
-        .inbox-info-card {
-            background-color: var(--bg-surface);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 20px;
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: var(--shadow);
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-
-        .active-number {
-            font-size: 24px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .timer-box {
-            background-color: var(--danger);
-            color: white;
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        /* Table */
-        .table-container {
-            background-color: var(--bg-surface);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            overflow-x: auto;
-            box-shadow: var(--shadow);
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: left;
-        }
-
-        th, td {
-            padding: 16px 20px;
-            border-bottom: 1px solid var(--border);
-        }
-
-        th {
-            background-color: var(--bg-body);
-            font-weight: 600;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            font-size: 12px;
-            letter-spacing: 0.5px;
-        }
-
-        tr:last-child td {
-            border-bottom: none;
-        }
-
-        .sender {
-            font-weight: 600;
-            color: var(--text-main);
-        }
-
-        .message-text {
-            color: var(--text-muted);
-            font-size: 15px;
-        }
-
-        .otp-highlight {
-            font-weight: 700;
-            color: var(--primary);
-        }
-
-        .time {
-            color: var(--text-muted);
-            font-size: 13px;
-            white-space: nowrap;
-        }
+        .msg-box { background: var(--bg); padding: 15px; border-radius: 10px; margin-bottom: 15px; border-left: 4px solid var(--primary); }
+        .msg-top { display: flex; justify-content: space-between; margin-bottom: 5px; }
+        .sender { font-weight: 600; }
+        .time { font-size: 12px; color: var(--text-light); }
+        .msg-text { color: var(--text); font-size: 14px; }
 
         /* Toast */
-        .toast {
-            position: fixed;
-            bottom: -60px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: var(--success);
-            color: white;
-            padding: 12px 24px;
-            border-radius: 30px;
-            font-weight: 500;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-            transition: bottom 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            z-index: 1000;
-        }
+        .toast { position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%); background: #2b2b2b; color: #fff; padding: 12px 25px; border-radius: 30px; font-weight: 500; transition: 0.4s; z-index: 1000; }
+        .toast.show { bottom: 40px; }
 
-        .toast.show {
-            bottom: 30px;
-        }
-
-        /* Footer */
-        footer {
-            text-align: center;
-            padding: 25px;
-            color: var(--text-muted);
-            font-size: 14px;
-            border-top: 1px solid var(--border);
-            background-color: var(--bg-surface);
-            margin-top: auto;
-        }
-
-        @media (max-width: 600px) {
-            .inbox-info-card {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            .phone-display { font-size: 22px; }
+        @media(max-width: 600px) {
+            .number-card { flex-direction: column; align-items: flex-start; gap: 15px; }
+            .btn-copy { width: 100%; }
         }
     </style>
 </head>
 <body>
 
     <header>
-        <div class="brand">
-            <h1>TempSMS Free</h1>
-            <p>Receive SMS Online Instantly</p>
-        </div>
-        <button class="theme-toggle" id="themeBtn" onclick="toggleTheme()">
-            🌙 Dark
-        </button>
+        <div class="logo">💬 TempSMS Pro</div>
+        <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">🌙 Dark Mode</button>
     </header>
 
-    <main>
-        <section id="numbers-section">
-            <h2 class="section-title">Available Numbers</h2>
-            <div class="numbers-grid" id="numbers-grid">
-                </div>
-        </section>
+    <div class="container">
+        <div class="alert">
+            ⚠️ <strong>UI Demo Only:</strong> These are dummy numbers for design testing. They will not receive real Telegram or WhatsApp OTPs.
+        </div>
 
-        <section id="inbox-section">
-            <div class="inbox-header-controls">
-                <button class="back-btn" onclick="closeInbox()">
-                    ← Back to Numbers
-                </button>
-                <button class="btn-primary" style="flex: none; padding: 10px 20px;" onclick="refreshMessages()">
-                    🔄 Refresh Messages
-                </button>
+        <div id="numbersView">
+            <h2 style="margin-bottom: 20px;">Select a Number</h2>
+            <div class="number-list" id="list"></div>
+        </div>
+
+        <div class="inbox" id="inboxView">
+            <div class="inbox-header">
+                <button class="back-btn" onclick="goBack()">← Back</button>
+                <h3 id="activeNumber">Number</h3>
+                <span style="font-size: 12px; color: var(--success);">● Receiving</span>
+            </div>
+            
+            <div class="loading" id="loader">
+                <div class="loader-spinner"></div>
+                <p>Waiting for new SMS...</p>
             </div>
 
-            <div class="inbox-info-card">
-                <div class="active-number" id="active-number-display">
-                    🇺🇸 +1 234 567 8900
-                </div>
-                <div class="timer-box">
-                    ⏱️ Expires in: <span id="expiry-timer">10:00</span>
-                </div>
-            </div>
-
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>From</th>
-                            <th>Message</th>
-                            <th>Time</th>
-                        </tr>
-                    </thead>
-                    <tbody id="messages-body">
-                        </tbody>
-                </table>
-            </div>
-        </section>
-    </main>
+            <div id="messagesArea"></div>
+        </div>
+    </div>
 
     <div class="toast" id="toast">Number Copied!</div>
 
-    <footer>
-        <p>⚠️ <strong>Educational Demo:</strong> These are public dummy numbers. Do not use for sensitive accounts.</p>
-        <p style="margin-top: 8px;">&copy; 2026 TempSMS Free. All rights reserved.</p>
-    </footer>
-
     <script>
-        // --- DATA ---
-        const phoneNumbers = [
-            { flag: '🇺🇸', code: 'USA', num: '+1 845 234 9911' },
-            { flag: '🇬🇧', code: 'UK', num: '+44 7911 123456' },
-            { flag: '🇮🇳', code: 'India', num: '+91 98765 43210' },
-            { flag: '🇨🇦', code: 'Canada', num: '+1 416 555 0198' },
-            { flag: '🇩🇪', code: 'Germany', num: '+49 151 23456789' }
+        // Data
+        const numbers = [
+            { flag: '🇺🇸', num: '+1 917 555 0100', country: 'United States' },
+            { flag: '🇬🇧', num: '+44 7700 900077', country: 'United Kingdom' },
+            { flag: '🇮🇳', num: '+91 98765 00000', country: 'India' },
+            { flag: '🇨🇦', num: '+1 416 555 0198', country: 'Canada' }
         ];
 
-        const senders = ['Google', 'Amazon', 'WhatsApp', 'Instagram', 'Telegram', 'Bank Alert', 'Uber'];
-
-        // --- STATE ---
-        let timerInterval;
-        let timeLeft = 600; // 10 minutes in seconds
-
-        // --- INITIALIZATION ---
-        function init() {
-            // Setup Theme
-            if (localStorage.getItem('theme') === 'dark') {
-                document.documentElement.setAttribute('data-theme', 'dark');
-                document.getElementById('themeBtn').innerText = '☀️ Light';
-            }
-
-            // Render Numbers
-            const grid = document.getElementById('numbers-grid');
-            grid.innerHTML = phoneNumbers.map((item, index) => `
-                <div class="number-card">
-                    <div class="card-header">
-                        <span>${item.flag} ${item.code}</span>
-                        <span style="font-size: 12px; color: var(--success);">● Online</span>
-                    </div>
-                    <div class="phone-display" id="num-${index}">${item.num}</div>
-                    <div class="card-actions">
-                        <button class="btn-outline" onclick="copyNumber('${item.num}', this)">Copy</button>
-                        <button class="btn-primary" onclick="openInbox('${item.num}', '${item.flag}')">Open Inbox</button>
-                    </div>
-                </div>
-            `).join('');
+        // Theme
+        if(localStorage.getItem('theme') === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            document.getElementById('themeBtn').innerText = '☀️ Light Mode';
         }
 
-        // --- THEME TOGGLE ---
         function toggleTheme() {
-            const btn = document.getElementById('themeBtn');
-            if (document.documentElement.getAttribute('data-theme') === 'dark') {
+            if(document.documentElement.getAttribute('data-theme') === 'dark') {
                 document.documentElement.removeAttribute('data-theme');
                 localStorage.setItem('theme', 'light');
-                btn.innerText = '🌙 Dark';
+                document.getElementById('themeBtn').innerText = '🌙 Dark Mode';
             } else {
                 document.documentElement.setAttribute('data-theme', 'dark');
                 localStorage.setItem('theme', 'dark');
-                btn.innerText = '☀️ Light';
+                document.getElementById('themeBtn').innerText = '☀️ Light Mode';
             }
         }
 
-        // --- COPY LOGIC ---
-        function copyNumber(text, btnElement) {
-            navigator.clipboard.writeText(text);
-            
-            // Button Animation
-            const originalText = btnElement.innerText;
-            btnElement.innerText = "Copied!";
-            btnElement.style.borderColor = "var(--success)";
-            btnElement.style.color = "var(--success)";
-            
-            // Show Toast
+        // Render Numbers
+        const listDiv = document.getElementById('list');
+        numbers.forEach(item => {
+            listDiv.innerHTML += `
+                <div class="number-card" onclick="openInbox('${item.flag}', '${item.num}')">
+                    <div class="num-info">
+                        <div class="flag">${item.flag}</div>
+                        <div class="num-text">
+                            <h3>${item.num}</h3>
+                            <p>● Active in ${item.country}</p>
+                        </div>
+                    </div>
+                    <button class="btn-copy" onclick="copyNum(event, '${item.num}')">Copy</button>
+                </div>
+            `;
+        });
+
+        // Copy
+        function copyNum(e, num) {
+            e.stopPropagation(); // Prevents opening inbox when clicking copy
+            navigator.clipboard.writeText(num);
             const toast = document.getElementById('toast');
-            toast.innerText = `Copied: ${text}`;
+            toast.innerText = `Copied: ${num}`;
             toast.classList.add('show');
-            
-            setTimeout(() => {
-                btnElement.innerText = originalText;
-                btnElement.style.borderColor = "var(--border)";
-                btnElement.style.color = "var(--text-main)";
-                toast.classList.remove('show');
-            }, 2000);
+            setTimeout(() => toast.classList.remove('show'), 2500);
         }
 
-        // --- MESSAGE GENERATOR ---
-        function generateRandomMessage() {
+        // Inbox Logic
+        let refreshInterval;
+        const senders = ['Google', 'Amazon', 'Snapchat', 'Bank Alert', 'Uber'];
+
+        function openInbox(flag, num) {
+            document.getElementById('numbersView').style.display = 'none';
+            document.getElementById('inboxView').style.display = 'block';
+            document.getElementById('activeNumber').innerText = `${flag} ${num}`;
+            
+            const msgArea = document.getElementById('messagesArea');
+            const loader = document.getElementById('loader');
+            
+            msgArea.innerHTML = '';
+            loader.style.display = 'block';
+
+            // Simulate fetching data
+            setTimeout(() => {
+                loader.style.display = 'none';
+                addRandomMessage();
+                addRandomMessage();
+            }, 1000);
+
+            // Auto fetch new fake messages
+            refreshInterval = setInterval(() => {
+                if(Math.random() > 0.5) addRandomMessage();
+            }, 6000);
+        }
+
+        function goBack() {
+            document.getElementById('inboxView').style.display = 'none';
+            document.getElementById('numbersView').style.display = 'block';
+            clearInterval(refreshInterval);
+        }
+
+        function addRandomMessage() {
             const sender = senders[Math.floor(Math.random() * senders.length)];
             const otp = Math.floor(100000 + Math.random() * 900000);
-            
-            const templates = [
-                `Your verification code is <span class="otp-highlight">${otp}</span>. Do not share it.`,
-                `<span class="otp-highlight">${otp}</span> is your login OTP. Valid for 10 minutes.`,
-                `Security Alert: Use code <span class="otp-highlight">${otp}</span> to verify your account.`
-            ];
-            
-            const text = templates[Math.floor(Math.random() * templates.length)];
-            
             const now = new Date();
-            const time = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
-
-            return `
-                <tr>
-                    <td class="sender">${sender}</td>
-                    <td class="message-text">${text}</td>
-                    <td class="time">${time}</td>
-                </tr>
+            const time = now.getHours() + ':' + now.getMinutes().toString().padStart(2, '0');
+            
+            const html = `
+                <div class="msg-box" style="animation: slideUp 0.3s;">
+                    <div class="msg-top">
+                        <span class="sender">${sender}</span>
+                        <span class="time">${time}</span>
+                    </div>
+                    <div class="msg-text">Your verification code is <strong>${otp}</strong>. Do not share this with anyone.</div>
+                </div>
             `;
+            document.getElementById('messagesArea').insertAdjacentHTML('afterbegin', html);
         }
-
-        // --- INBOX LOGIC ---
-        function openInbox(number, flag) {
-            document.getElementById('numbers-section').style.display = 'none';
-            document.getElementById('inbox-section').style.display = 'block';
-            
-            document.getElementById('active-number-display').innerHTML = `${flag} ${number}`;
-            
-            // Clear old messages and add 3 initial ones
-            const tbody = document.getElementById('messages-body');
-            tbody.innerHTML = '';
-            for(let i=0; i<3; i++) tbody.innerHTML += generateRandomMessage();
-            
-            startTimer();
-            window.scrollTo(0, 0);
-        }
-
-        function closeInbox() {
-            document.getElementById('inbox-section').style.display = 'none';
-            document.getElementById('numbers-section').style.display = 'block';
-            clearInterval(timerInterval);
-        }
-
-        function refreshMessages() {
-            const tbody = document.getElementById('messages-body');
-            // Add a new message to the top
-            tbody.insertAdjacentHTML('afterbegin', generateRandomMessage());
-        }
-
-        // --- EXPIRY TIMER ---
-        function startTimer() {
-            clearInterval(timerInterval);
-            timeLeft = 600; // Reset to 10 mins
-            const timerDisplay = document.getElementById('expiry-timer');
-            
-            timerInterval = setInterval(() => {
-                timeLeft--;
-                const minutes = Math.floor(timeLeft / 60);
-                const seconds = timeLeft % 60;
-                timerDisplay.innerText = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-                
-                if (timeLeft <= 0) {
-                    clearInterval(timerInterval);
-                    timerDisplay.innerText = "00:00";
-                    alert("This temporary number has expired. Please select a new one.");
-                    closeInbox();
-                }
-            }, 1000);
-        }
-
-        // Run on load
-        window.onload = init;
     </script>
 </body>
 </html>
