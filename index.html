@@ -3,196 +3,143 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Temp SMS - Receive OTP Online</title>
+    <title>Live Temp SMS - One Page</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f7f6;
-            margin: 0;
-            padding: 0;
+            background-color: #f0f2f5;
             display: flex;
             justify-content: center;
-            align-items: center;
-            min-height: 100vh;
+            padding: 20px;
         }
         .container {
-            background-color: #ffffff;
+            background: white;
             width: 100%;
             max-width: 600px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             padding: 30px;
-            box-sizing: border-box;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
-        h1 {
-            text-align: center;
-            color: #333;
-            margin-top: 0;
-        }
-        .control-group {
-            margin-bottom: 20px;
-        }
-        label {
-            display: block;
-            margin-bottom: 8px;
-            color: #555;
-            font-weight: bold;
-        }
-        select, input[type="text"] {
+        h2 { text-align: center; color: #333; }
+        .input-group { margin-bottom: 20px; }
+        input[type="text"] {
             width: 100%;
             padding: 12px;
-            border: 1px solid #ddd;
+            border: 1px solid #ccc;
             border-radius: 6px;
             font-size: 16px;
             box-sizing: border-box;
-        }
-        .number-display {
-            display: flex;
-            gap: 10px;
+            margin-bottom: 10px;
         }
         button {
-            background-color: #007bff;
+            width: 100%;
+            padding: 12px;
+            background-color: #28a745;
             color: white;
             border: none;
-            padding: 12px 20px;
             border-radius: 6px;
             font-size: 16px;
             cursor: pointer;
-            transition: background 0.3s;
+            font-weight: bold;
         }
-        button:hover {
-            background-color: #0056b3;
-        }
-        .inbox {
-            margin-top: 30px;
-            border-top: 2px solid #eee;
-            padding-top: 20px;
-        }
-        .message-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            max-height: 300px;
-            overflow-y: auto;
-        }
-        .message-item {
-            background-color: #f9f9f9;
-            border-left: 4px solid #007bff;
+        button:hover { background-color: #218838; }
+        #loading { text-align: center; display: none; color: #007bff; font-weight: bold; margin-top: 15px; }
+        .inbox { margin-top: 20px; }
+        .msg-box {
+            background: #f8f9fa;
+            border-left: 5px solid #007bff;
             padding: 15px;
             margin-bottom: 10px;
-            border-radius: 4px;
+            border-radius: 5px;
         }
-        .message-sender {
-            font-weight: bold;
-            color: #333;
-            font-size: 14px;
-        }
-        .message-time {
-            color: #888;
-            font-size: 12px;
-            float: right;
-        }
-        .message-body {
-            margin-top: 8px;
-            color: #555;
-            font-size: 15px;
-        }
-        .refresh-btn {
-            width: 100%;
-            background-color: #28a745;
-            margin-top: 15px;
-        }
-        .refresh-btn:hover {
-            background-color: #218838;
-        }
+        .msg-sender { font-weight: bold; color: #333; }
+        .msg-text { margin-top: 5px; color: #555; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>📱 Temp SMS Receiver</h1>
+    <h2>📡 Live OTP Fetcher</h2>
     
-    <div class="control-group">
-        <label for="countrySelect">Select Country:</label>
-        <select id="countrySelect" onchange="changeNumber()">
-            <option value="india">🇮🇳 India (+91)</option>
-            <option value="pakistan">🇵🇰 Pakistan (+92)</option>
-        </select>
+    <div class="input-group">
+        <label>Enter Target Public Number (without +):</label>
+        <input type="text" id="targetNumber" placeholder="e.g., 447123456789">
+        <button onclick="fetchSMS()">Fetch Latest SMS</button>
     </div>
 
-    <div class="control-group">
-        <label>Your Temporary Number:</label>
-        <div class="number-display">
-            <input type="text" id="phoneNumber" value="+91 98765 43210" readonly>
-            <button onclick="copyNumber()">Copy</button>
+    <div id="loading">⏳ Data nikal raha hai, please wait...</div>
+
+    <div class="inbox" id="smsContainer">
         </div>
-    </div>
-
-    <div class="inbox">
-        <h3>📥 SMS Inbox</h3>
-        <ul class="message-list" id="inboxMessages">
-            <li class="message-item">
-                <span class="message-sender">System</span>
-                <span class="message-time">Just now</span>
-                <div class="message-body">Waiting for new SMS... Refresh the page to check.</div>
-            </li>
-        </ul>
-        <button class="refresh-btn" onclick="fetchNewSMS()">🔄 Refresh Inbox</button>
-    </div>
 </div>
 
 <script>
-    // Dummy numbers for UI testing
-    const numbers = {
-        'india': '+91 98765 43210',
-        'pakistan': '+92 300 1234567'
-    };
-
-    // Function to change number when country is selected
-    function changeNumber() {
-        const country = document.getElementById('countrySelect').value;
-        document.getElementById('phoneNumber').value = numbers[country];
+    async function fetchSMS() {
+        const number = document.getElementById('targetNumber').value.trim();
+        const container = document.getElementById('smsContainer');
+        const loading = document.getElementById('loading');
         
-        // Clear inbox when number changes
-        document.getElementById('inboxMessages').innerHTML = `
-            <li class="message-item">
-                <span class="message-sender">System</span>
-                <span class="message-time">Just now</span>
-                <div class="message-body">Number changed. Waiting for new SMS on ${numbers[country]}...</div>
-            </li>
-        `;
-    }
+        if (!number) {
+            alert("Bhai, pehle koi number toh daalo!");
+            return;
+        }
 
-    // Function to copy the number
-    function copyNumber() {
-        const numberInput = document.getElementById('phoneNumber');
-        numberInput.select();
-        numberInput.setSelectionRange(0, 99999); // For mobile devices
-        document.execCommand("copy");
-        alert("Number Copied: " + numberInput.value);
-    }
+        // UI Updates
+        container.innerHTML = "";
+        loading.style.display = "block";
 
-    // Function to simulate fetching new SMS (Mock Backend)
-    function fetchNewSMS() {
-        const inbox = document.getElementById('inboxMessages');
-        const now = new Date();
-        const timeString = now.getHours() + ":" + String(now.getMinutes()).padStart(2, '0');
-        
-        // Generate a random 6-digit OTP
-        const randomOTP = Math.floor(100000 + Math.random() * 900000);
-        const services = ['Amazon', 'Facebook', 'WhatsApp', 'Instagram', 'Bank'];
-        const randomService = services[Math.floor(Math.random() * services.length)];
+        try {
+            // Yahan hum kisi public site (jaise receive-smss) ka URL target kar rahe hain
+            const targetSiteUrl = `https://receive-smss.com/sms/${number}/`;
+            
+            // CORS bypass karne ke liye Free Proxy API ka use
+            const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetSiteUrl)}`;
 
-        const newMessage = `
-            <li class="message-item">
-                <span class="message-sender">${randomService}</span>
-                <span class="message-time">${timeString}</span>
-                <div class="message-body">Your verification code is: <strong>${randomOTP}</strong>. Do not share this with anyone.</div>
-            </li>
-        `;
+            const response = await fetch(proxyUrl);
+            const data = await response.json();
+            
+            // Target website ka pura HTML code humein mil gaya
+            const htmlText = data.contents;
 
-        // Add new message to the top
-        inbox.innerHTML = newMessage + inbox.innerHTML;
+            // HTML ko parse karne ka tareeka (Browser ke andar hi)
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(htmlText, 'text/html');
+
+            // Ab HTML mein se data nikalna (Note: Target site ke class name ke hisaab se)
+            // Example ke taur par main yahan generic row dhundh raha hu
+            const messageRows = doc.querySelectorAll('.message-row'); 
+
+            loading.style.display = "none";
+
+            if (messageRows.length === 0) {
+                container.innerHTML = `<div class="msg-box" style="border-left-color: red;">
+                    Koi naya message nahi mila ya target website ne format change kar diya hai.
+                </div>`;
+                return;
+            }
+
+            // Har message ko UI mein dikhana
+            messageRows.forEach(row => {
+                // In classes ko target website ke hisaab se adjust karna padta hai
+                const sender = row.querySelector('.sender-column')?.innerText || "Unknown";
+                const text = row.querySelector('.message-text-column')?.innerText || "No text";
+                
+                const msgDiv = document.createElement('div');
+                msgDiv.className = 'msg-box';
+                msgDiv.innerHTML = `
+                    <div class="msg-sender">From: ${sender}</div>
+                    <div class="msg-text">${text}</div>
+                `;
+                container.appendChild(msgDiv);
+            });
+
+        } catch (error) {
+            loading.style.display = "none";
+            container.innerHTML = `<div class="msg-box" style="border-left-color: red;">
+                Error: Data nikalne mein problem aayi. Target site ne block kar diya hoga.
+            </div>`;
+            console.error(error);
+        }
     }
 </script>
 
