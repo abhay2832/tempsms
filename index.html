@@ -14,16 +14,16 @@
             --bg: #121212; --surface: #1e1e1e; --text: #f8f9fa; --text-light: #adb5bd;
             --primary: #4cc9f0; --border: #2b2b2b;
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; transition: 0.3s; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; transition: background-color 0.3s, color 0.3s; }
         body { background: var(--bg); color: var(--text); padding-bottom: 50px; }
 
         header { background: var(--surface); padding: 20px 5%; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
         .logo { font-size: 24px; font-weight: 700; color: var(--primary); }
-        .theme-btn { background: none; border: 1px solid var(--border); color: var(--text); padding: 8px 15px; border-radius: 8px; cursor: pointer; }
+        .theme-btn { background: none; border: 1px solid var(--border); color: var(--text); padding: 8px 15px; border-radius: 8px; cursor: pointer; font-weight: 500;}
 
         .container { max-width: 900px; margin: 40px auto; padding: 0 20px; }
         .number-card { background: var(--surface); padding: 20px; border-radius: var(--radius); border: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; cursor: pointer; }
-        .number-card:hover { border-color: var(--primary); }
+        .number-card:hover { border-color: var(--primary); transform: translateY(-2px); }
         .num-info { display: flex; align-items: center; gap: 15px; }
         .flag { font-size: 30px; }
         .num-text h3 { font-size: 20px; }
@@ -32,28 +32,36 @@
 
         /* Inbox */
         .inbox { display: none; background: var(--surface); padding: 30px; border-radius: var(--radius); border: 1px solid var(--border); }
-        .inbox-header { display: flex; justify-content: space-between; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 15px; }
+        .inbox-header { display: flex; justify-content: space-between; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 15px; align-items: center;}
         
         .loader { display: none; text-align: center; padding: 30px; color: var(--primary); font-weight: 600; }
+        .loader-spinner { display: inline-block; width: 30px; height: 30px; border: 3px solid rgba(0,0,0,0.1); border-radius: 50%; border-top-color: var(--primary); animation: spin 1s ease-in-out infinite; margin-bottom: 10px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
         
-        .msg-box { background: var(--bg); padding: 15px; border-radius: 10px; margin-bottom: 15px; border-left: 4px solid var(--primary); }
+        .msg-box { background: var(--bg); padding: 15px; border-radius: 10px; margin-bottom: 15px; border-left: 4px solid var(--primary); animation: slideUp 0.3s; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .msg-top { display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 13px; color: var(--text-light); }
         .sender { font-weight: 600; color: var(--text); font-size: 15px; }
         .msg-text { font-size: 14px; margin-top: 5px; }
-        .error-msg { color: #ef4444; text-align: center; padding: 20px; background: rgba(239, 68, 68, 0.1); border-radius: 8px; }
+        .error-msg { color: #ef4444; text-align: center; padding: 20px; background: rgba(239, 68, 68, 0.1); border-radius: 8px; font-weight: 500;}
+
+        @media(max-width: 600px) {
+            .number-card { flex-direction: column; align-items: flex-start; gap: 15px; }
+            .btn { width: 100%; }
+        }
     </style>
 </head>
 <body>
 
     <header>
         <div class="logo">💬 Real TempSMS</div>
-        <button class="theme-btn" onclick="toggleTheme()">🌙 Dark Mode</button>
+        <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">🌙 Dark Mode</button>
     </header>
 
     <div class="container">
         <div id="numbersView">
             <h2>Select a Public Number</h2>
-            <p style="color: var(--text-light); margin-bottom: 20px;">Fetching real data via Public API Proxy.</p>
+            <p style="color: var(--text-light); margin-bottom: 20px;">Fetching real data via Proxy API.</p>
             <div id="list"></div>
         </div>
 
@@ -64,13 +72,15 @@
                 <button class="btn" onclick="fetchRealSMS(currentNumberClean)">🔄 Refresh</button>
             </div>
             
-            <div class="loader" id="loader">⏳ Fetching real live SMS from network... Please wait.</div>
+            <div class="loader" id="loader">
+                <div class="loader-spinner"></div>
+                <p>Fetching live SMS from network...</p>
+            </div>
             <div id="messagesArea"></div>
         </div>
     </div>
 
     <script>
-        // Real public numbers that currently exist on receive-smss.com
         const numbers = [
             { flag: '🇺🇸', num: '+1 201 500 0111', clean: '12015000111' },
             { flag: '🇬🇧', num: '+44 748 888 2321', clean: '447488882321' },
@@ -80,7 +90,11 @@
 
         let currentNumberClean = '';
 
-        // Render Numbers
+        if(localStorage.getItem('theme') === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            document.getElementById('themeBtn').innerText = '☀️ Light Mode';
+        }
+
         const listDiv = document.getElementById('list');
         numbers.forEach(item => {
             listDiv.innerHTML += `
@@ -94,7 +108,17 @@
             `;
         });
 
-        function toggleTheme() { document.body.parentElement.toggleAttribute('data-theme'); }
+        function toggleTheme() {
+            if(document.documentElement.getAttribute('data-theme') === 'dark') {
+                document.documentElement.removeAttribute('data-theme');
+                localStorage.setItem('theme', 'light');
+                document.getElementById('themeBtn').innerText = '🌙 Dark Mode';
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+                document.getElementById('themeBtn').innerText = '☀️ Light Mode';
+            }
+        }
 
         function openInbox(flag, num, cleanNum) {
             document.getElementById('numbersView').style.display = 'none';
@@ -109,7 +133,7 @@
             document.getElementById('numbersView').style.display = 'block';
         }
 
-        // --- REAL API FETCH LOGIC (THE JUGAAD) ---
+        // --- NAYA API FETCH LOGIC (corsproxy.io) ---
         async function fetchRealSMS(cleanNum) {
             const msgArea = document.getElementById('messagesArea');
             const loader = document.getElementById('loader');
@@ -118,26 +142,24 @@
             loader.style.display = 'block';
 
             try {
-                // Target URL of a real public SMS site
+                // Target website
                 const targetUrl = `https://receive-smss.com/sms/${cleanNum}/`;
-                // Free CORS Proxy to allow our GitHub HTML to read their data
-                const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`;
+                // Naya Proxy
+                const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(targetUrl)}`;
 
                 const response = await fetch(proxyUrl);
-                const data = await response.json();
                 
-                // Read the HTML returned by the proxy
+                if (!response.ok) throw new Error("Proxy Blocked");
+                
+                const textData = await response.text();
                 const parser = new DOMParser();
-                const doc = parser.parseFromString(data.contents, "text/html");
+                const doc = parser.parseFromString(textData, "text/html");
 
-                // Scrape the messages based on the target site's HTML structure
-                // receive-smss.com uses rows with specific columns
                 const rows = doc.querySelectorAll('.message-row');
-                
                 loader.style.display = 'none';
 
                 if(rows.length === 0) {
-                    msgArea.innerHTML = `<div class="error-msg">❌ No new messages found or the public number is currently offline.</div>`;
+                    msgArea.innerHTML = `<div class="error-msg">❌ Koi naya message nahi mila ya Target Site ne block kar diya hai.</div>`;
                     return;
                 }
 
@@ -159,7 +181,8 @@
 
             } catch (error) {
                 loader.style.display = 'none';
-                msgArea.innerHTML = `<div class="error-msg">⚠️ Failed to connect to Public API. The Proxy might be overloaded. Try again later.</div>`;
+                msgArea.innerHTML = `<div class="error-msg">⚠️ Failed to connect. Free Proxy block ho gayi hai. Is problem ko hamesha ke liye theek karne ke liye Backend Server (Node.js) zaroori hai.</div>`;
+                console.error(error);
             }
         }
     </script>
