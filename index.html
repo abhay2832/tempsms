@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Live TempSMS - Real API</title>
+    <title>Real TempSMS - API Proxy</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -14,7 +14,7 @@
             --bg: #121212; --surface: #1e1e1e; --text: #f8f9fa; --text-light: #adb5bd;
             --primary: #4cc9f0; --border: #2b2b2b;
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; transition: background-color 0.3s, color 0.3s; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; transition: 0.3s; }
         body { background: var(--bg); color: var(--text); padding-bottom: 50px; }
 
         header { background: var(--surface); padding: 20px 5%; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
@@ -43,7 +43,18 @@
         .msg-top { display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 13px; color: var(--text-light); }
         .sender { font-weight: 600; color: var(--text); font-size: 15px; }
         .msg-text { font-size: 14px; margin-top: 5px; }
-        .error-msg { color: #ef4444; text-align: center; padding: 20px; background: rgba(239, 68, 68, 0.1); border-radius: 8px; font-weight: 500;}
+        
+        /* The requested Error Box */
+        .error-msg { 
+            color: #ef4444; 
+            text-align: center; 
+            padding: 25px; 
+            background: rgba(239, 68, 68, 0.08); 
+            border: 1px dashed #ef4444;
+            border-radius: 12px; 
+            font-weight: 500;
+            line-height: 1.6;
+        }
 
         @media(max-width: 600px) {
             .number-card { flex-direction: column; align-items: flex-start; gap: 15px; }
@@ -61,7 +72,7 @@
     <div class="container">
         <div id="numbersView">
             <h2>Select a Public Number</h2>
-            <p style="color: var(--text-light); margin-bottom: 20px;">Fetching real data via Proxy API.</p>
+            <p style="color: var(--text-light); margin-bottom: 20px;">Fetching live data via Proxy. (Demo Purpose)</p>
             <div id="list"></div>
         </div>
 
@@ -74,7 +85,7 @@
             
             <div class="loader" id="loader">
                 <div class="loader-spinner"></div>
-                <p>Fetching live SMS from network...</p>
+                <p>Connecting to Proxy...</p>
             </div>
             <div id="messagesArea"></div>
         </div>
@@ -84,7 +95,7 @@
         const numbers = [
             { flag: '🇺🇸', num: '+1 201 500 0111', clean: '12015000111' },
             { flag: '🇬🇧', num: '+44 748 888 2321', clean: '447488882321' },
-            { flag: '🇫🇷', num: '+33 757 130 111', clean: '33757130111' },
+            { flag: '🇮🇳', num: '+91 912 345 6789', clean: '919123456789' },
             { flag: '🇸🇪', num: '+46 76 943 60 11', clean: '46769436011' }
         ];
 
@@ -103,7 +114,7 @@
                         <div class="flag">${item.flag}</div>
                         <div class="num-text"><h3>${item.num}</h3></div>
                     </div>
-                    <button class="btn">View Real SMS</button>
+                    <button class="btn">View SMS</button>
                 </div>
             `;
         });
@@ -131,9 +142,9 @@
         function goBack() {
             document.getElementById('inboxView').style.display = 'none';
             document.getElementById('numbersView').style.display = 'block';
+            document.getElementById('messagesArea').innerHTML = '';
         }
 
-        // --- NAYA API FETCH LOGIC (corsproxy.io) ---
         async function fetchRealSMS(cleanNum) {
             const msgArea = document.getElementById('messagesArea');
             const loader = document.getElementById('loader');
@@ -142,14 +153,12 @@
             loader.style.display = 'block';
 
             try {
-                // Target website
                 const targetUrl = `https://receive-smss.com/sms/${cleanNum}/`;
-                // Naya Proxy
                 const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(targetUrl)}`;
 
                 const response = await fetch(proxyUrl);
                 
-                if (!response.ok) throw new Error("Proxy Blocked");
+                if (!response.ok) throw new Error("Blocked");
                 
                 const textData = await response.text();
                 const parser = new DOMParser();
@@ -159,7 +168,7 @@
                 loader.style.display = 'none';
 
                 if(rows.length === 0) {
-                    msgArea.innerHTML = `<div class="error-msg">❌ Koi naya message nahi mila ya Target Site ne block kar diya hai.</div>`;
+                    msgArea.innerHTML = `<div class="error-msg">Failed to connect. Free Proxy block ho gayi hai. Is problem ko hamesha ke liye theek karne ke liye Backend Server (Node.js) zaroori hai.</div>`;
                     return;
                 }
 
@@ -181,8 +190,7 @@
 
             } catch (error) {
                 loader.style.display = 'none';
-                msgArea.innerHTML = `<div class="error-msg">⚠️ Failed to connect. Free Proxy block ho gayi hai. Is problem ko hamesha ke liye theek karne ke liye Backend Server (Node.js) zaroori hai.</div>`;
-                console.error(error);
+                msgArea.innerHTML = `<div class="error-msg">Failed to connect. Free Proxy block ho gayi hai. Is problem ko hamesha ke liye theek karne ke liye Backend Server (Node.js) zaroori hai.</div>`;
             }
         }
     </script>
