@@ -3,52 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Free Temp SMS</title>
+    <title>Free Temp SMS | Receive SMS Online</title>
     <style>
-        /* CSS Variables for Light/Dark Mode */
+        /* CSS Variables for Theming */
         :root {
-            --bg-color: #f0f2f5;
+            --bg-color: #f4f7f6;
             --text-color: #333;
             --card-bg: #ffffff;
-            --primary-color: #007bff;
-            --primary-hover: #0056b3;
-            --border-color: #e1e4e8;
-            --shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-            --danger-bg: #fff3f3;
-            --danger-text: #dc3545;
+            --primary: #0066ff;
+            --primary-hover: #0052cc;
+            --border: #eaedf1;
+            --shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+            --secondary-text: #666;
+            --input-bg: #fff;
         }
 
         [data-theme="dark"] {
             --bg-color: #121212;
-            --text-color: #e0e0e0;
+            --text-color: #f0f0f0;
             --card-bg: #1e1e1e;
-            --primary-color: #3b82f6;
+            --primary: #3b82f6;
             --primary-hover: #2563eb;
-            --border-color: #333;
-            --shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-            --danger-bg: #2d1a1a;
-            --danger-text: #ff6b6b;
+            --border: #2d2d2d;
+            --shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+            --secondary-text: #aaa;
+            --input-bg: #2d2d2d;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            transition: background-color 0.3s, color 0.3s;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; transition: background-color 0.3s, color 0.3s; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background-color: var(--bg-color); color: var(--text-color); }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            line-height: 1.6;
-        }
-
-        /* Header Navigation */
+        /* Header */
         header {
             background-color: var(--card-bg);
-            box-shadow: var(--shadow);
-            padding: 15px 5%;
+            padding: 20px 5%;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -56,484 +45,264 @@
             top: 0;
             z-index: 100;
         }
+        .logo-area h1 { font-size: 24px; color: var(--primary); }
+        .logo-area p { font-size: 14px; color: var(--secondary-text); }
+        .theme-btn { background: none; border: none; font-size: 24px; cursor: pointer; color: var(--text-color); }
 
-        .logo {
-            font-size: 24px;
-            font-weight: bold;
-            color: var(--primary-color);
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+        /* Main Container */
+        main { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
+
+        /* Search */
+        .search-box { margin-bottom: 30px; }
+        .search-box input {
+            width: 100%; padding: 16px; border-radius: 12px;
+            border: 1px solid var(--border); background-color: var(--input-bg);
+            color: var(--text-color); font-size: 16px; outline: none;
+            box-shadow: var(--shadow);
         }
+        .search-box input:focus { border-color: var(--primary); }
 
-        nav {
-            display: flex;
-            gap: 20px;
-            align-items: center;
-        }
-
-        nav a {
-            text-decoration: none;
-            color: var(--text-color);
-            font-weight: 500;
-        }
-
-        nav a:hover {
-            color: var(--primary-color);
-        }
-
-        .theme-toggle {
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 20px;
-            color: var(--text-color);
-        }
-
-        /* Main Content */
-        main {
-            max-width: 1000px;
-            margin: 30px auto;
-            padding: 0 20px;
-        }
-
-        /* Notice Area */
-        .notice {
-            background-color: var(--danger-bg);
-            color: var(--danger-text);
-            padding: 15px;
-            border-radius: 8px;
-            text-align: center;
-            margin-bottom: 25px;
-            font-weight: 500;
-            border-left: 5px solid var(--danger-text);
-        }
-
-        /* Search Bar */
-        .search-container {
-            margin-bottom: 30px;
-        }
-
-        .search-container input {
-            width: 100%;
-            padding: 15px;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            background-color: var(--card-bg);
-            color: var(--text-color);
-            font-size: 16px;
-            outline: none;
-        }
-
-        .search-container input:focus {
-            border-color: var(--primary-color);
-        }
-
-        /* Numbers Grid */
-        .numbers-grid {
+        /* Grid Layout */
+        .grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
+            gap: 25px;
         }
 
-        .number-card {
-            background-color: var(--card-bg);
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border-color);
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
+        /* Number Cards */
+        .card {
+            background-color: var(--card-bg); border-radius: 16px;
+            padding: 25px; box-shadow: var(--shadow);
+            border: 1px solid var(--border); display: flex; flex-direction: column; gap: 15px;
         }
-
-        .number-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 20px;
-            font-weight: bold;
+        .card-header { display: flex; align-items: center; gap: 10px; font-size: 20px; font-weight: 600; }
+        .number-display { font-size: 24px; font-weight: bold; letter-spacing: 1px; }
+        .actions { display: flex; gap: 10px; }
+        button {
+            padding: 12px; border: none; border-radius: 8px; cursor: pointer;
+            font-size: 14px; font-weight: 600; flex: 1; transition: transform 0.1s;
         }
+        button:active { transform: scale(0.96); }
+        .btn-copy { background-color: var(--border); color: var(--text-color); }
+        .btn-open { background-color: var(--primary); color: white; }
+        .btn-open:hover { background-color: var(--primary-hover); }
 
-        .country-flag {
-            font-size: 24px;
+        /* Inbox Modal */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);
+            display: none; justify-content: center; align-items: center; z-index: 1000;
         }
-
-        .card-actions {
-            display: flex;
-            gap: 10px;
+        .modal {
+            background: var(--card-bg); width: 90%; max-width: 600px;
+            border-radius: 16px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            animation: slideIn 0.3s ease-out;
         }
-
-        .btn {
-            flex: 1;
-            padding: 10px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 14px;
-            transition: transform 0.1s, background-color 0.2s;
+        @keyframes slideIn { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .modal-header {
+            background: var(--primary); color: white; padding: 20px;
+            display: flex; justify-content: space-between; align-items: center;
         }
-
-        .btn:active {
-            transform: scale(0.95);
+        .close-btn { background: none; border: none; color: white; font-size: 28px; cursor: pointer; padding: 0; flex: none; }
+        .msg-list { padding: 20px; max-height: 400px; overflow-y: auto; background: var(--bg-color); }
+        
+        /* Message Bubbles */
+        .msg-item {
+            background: var(--card-bg); padding: 16px; border-radius: 12px;
+            margin-bottom: 15px; border-left: 5px solid var(--primary);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05); animation: fadeIn 0.4s;
         }
+        @keyframes fadeIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
+        .msg-top { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 13px; }
+        .msg-sender { font-weight: 700; color: var(--text-color); font-size: 15px; }
+        .msg-time { color: var(--secondary-text); }
+        .msg-text { color: var(--secondary-text); line-height: 1.5; }
+        .loading-text { text-align: center; padding: 20px; color: var(--secondary-text); font-weight: bold; }
 
-        .btn-copy {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            border: 1px solid var(--border-color);
-        }
-
-        .btn-copy:hover {
-            background-color: #e2e6ea;
-            color: #333;
-        }
-
-        [data-theme="dark"] .btn-copy:hover {
-            background-color: #333;
-            color: #fff;
-        }
-
-        .btn-view {
-            background-color: var(--primary-color);
-            color: white;
-        }
-
-        .btn-view:hover {
-            background-color: var(--primary-hover);
-        }
-
-        /* Inbox Section (Modal) */
-        .inbox-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-            backdrop-filter: blur(4px);
-        }
-
-        .inbox-content {
-            background-color: var(--card-bg);
-            width: 90%;
-            max-width: 600px;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            animation: slideUp 0.3s ease-out;
-        }
-
-        @keyframes slideUp {
-            from { transform: translateY(50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        .inbox-header {
-            padding: 20px;
-            background-color: var(--primary-color);
-            color: white;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .close-btn {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 24px;
-            cursor: pointer;
-        }
-
-        .messages-list {
-            padding: 20px;
-            max-height: 400px;
-            overflow-y: auto;
-            background-color: var(--bg-color);
-        }
-
-        .message-item {
-            background-color: var(--card-bg);
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            border-left: 4px solid var(--primary-color);
-            box-shadow: var(--shadow);
-            animation: fadeIn 0.5s ease-in;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateX(-10px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-
-        .msg-top {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
-            font-size: 14px;
-        }
-
-        .msg-sender {
-            font-weight: bold;
-            color: var(--text-color);
-        }
-
-        .msg-time {
-            color: #888;
-        }
-
-        .msg-body {
-            color: var(--text-color);
-            font-size: 15px;
-        }
-
-        /* Toast Notification */
+        /* Toast */
         .toast {
-            visibility: hidden;
-            min-width: 250px;
-            background-color: #333;
-            color: #fff;
-            text-align: center;
-            border-radius: 8px;
-            padding: 16px;
-            position: fixed;
-            z-index: 1001;
-            left: 50%;
-            bottom: 30px;
-            transform: translateX(-50%);
-            font-size: 15px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%);
+            background: #222; color: white; padding: 12px 24px; border-radius: 30px;
+            font-weight: 600; box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: bottom 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 2000;
         }
-
-        .toast.show {
-            visibility: visible;
-            animation: fadein 0.5s, fadeout 0.5s 2.5s;
-        }
-
-        @keyframes fadein {
-            from { bottom: 0; opacity: 0; } 
-            to { bottom: 30px; opacity: 1; }
-        }
-
-        @keyframes fadeout {
-            from { bottom: 30px; opacity: 1; } 
-            to { bottom: 0; opacity: 0; }
-        }
+        .toast.show { bottom: 40px; }
 
         /* Footer */
-        footer {
-            text-align: center;
-            padding: 20px;
-            color: var(--text-color);
-            margin-top: 40px;
-            border-top: 1px solid var(--border-color);
-        }
-
-        /* Responsive */
-        @media (max-width: 600px) {
-            nav { display: none; }
-            .theme-toggle { display: block; }
-        }
+        footer { text-align: center; padding: 30px; color: var(--secondary-text); font-size: 14px; }
     </style>
 </head>
 <body>
 
     <header>
-        <a href="#" class="logo">💬 Free Temp SMS</a>
-        <nav>
-            <a href="#">Home</a>
-            <a href="#">Numbers</a>
-            <a href="#">About</a>
-            <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🌙</button>
-        </nav>
+        <div class="logo-area">
+            <h1>💬 Free Temp SMS</h1>
+            <p>Receive SMS online instantly</p>
+        </div>
+        <button class="theme-btn" onclick="toggleTheme()" id="themeIcon">🌙</button>
     </header>
 
     <main>
-        <div class="notice">
-            ⚠️ <strong>Notice:</strong> These numbers are public and should not be used for sensitive accounts or private information.
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Search by country or number..." onkeyup="handleSearch()">
         </div>
-
-        <div class="search-container">
-            <input type="text" id="searchInput" placeholder="Search by country or number..." onkeyup="filterNumbers()">
-        </div>
-
-        <div class="numbers-grid" id="numbersGrid">
-            </div>
+        <div class="grid" id="numberGrid"></div>
     </main>
 
-    <div class="inbox-modal" id="inboxModal">
-        <div class="inbox-content">
-            <div class="inbox-header">
+    <div class="modal-overlay" id="inboxModal" onclick="closeModalOnOutsideClick(event)">
+        <div class="modal">
+            <div class="modal-header">
                 <div>
-                    <h3 id="modalNumberTitle">Inbox</h3>
-                    <small>Auto-refreshing every 5 seconds...</small>
+                    <h2 id="modalTitle" style="font-size: 18px;">Inbox</h2>
+                    <span style="font-size: 12px; opacity: 0.8;">Auto-updating every 5s</span>
                 </div>
                 <button class="close-btn" onclick="closeInbox()">&times;</button>
             </div>
-            <div class="messages-list" id="messagesList">
-                </div>
+            <div class="msg-list" id="messageList"></div>
         </div>
     </div>
 
-    <div id="toast" class="toast">Number Copied!</div>
+    <div class="toast" id="toast">Copied to clipboard!</div>
 
-    <footer>
-        © 2026 Free Temp SMS
-    </footer>
+    <footer>&copy; 2026 Free Temp SMS. All rights reserved.</footer>
 
     <script>
-        // 1. Theme Toggling Logic
-        const themeBtn = document.getElementById('themeBtn');
-        const currentTheme = localStorage.getItem('theme');
+        // --- DATA ---
+        const numbersData = [
+            { flag: '🇺🇸', code: 'USA', num: '+1 223 445 8899' },
+            { flag: '🇬🇧', code: 'UK', num: '+44 7488 553322' },
+            { flag: '🇮🇳', code: 'India', num: '+91 90000 12345' },
+            { flag: '🇩🇪', code: 'Germany', num: '+49 1512 345678' },
+            { flag: '🇨🇦', code: 'Canada', num: '+1 416 555 0000' }
+        ];
 
-        if (currentTheme === 'dark') {
+        // --- THEME TOGGLE ---
+        const themeIcon = document.getElementById('themeIcon');
+        if (localStorage.getItem('theme') === 'dark') {
             document.documentElement.setAttribute('data-theme', 'dark');
-            themeBtn.innerText = '☀️';
+            themeIcon.innerText = '☀️';
         }
 
         function toggleTheme() {
-            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-            if (isDark) {
+            if (document.documentElement.getAttribute('data-theme') === 'dark') {
                 document.documentElement.removeAttribute('data-theme');
                 localStorage.setItem('theme', 'light');
-                themeBtn.innerText = '🌙';
+                themeIcon.innerText = '🌙';
             } else {
                 document.documentElement.setAttribute('data-theme', 'dark');
                 localStorage.setItem('theme', 'dark');
-                themeBtn.innerText = '☀️';
+                themeIcon.innerText = '☀️';
             }
         }
 
-        // 2. Data Structure
-        const phoneNumbers = [
-            { country: 'USA', flag: '🇺🇸', number: '+1 917 000 1234' },
-            { country: 'UK', flag: '🇬🇧', number: '+44 7700 900123' },
-            { country: 'India', flag: '🇮🇳', number: '+91 90000 00000' },
-            { country: 'Germany', flag: '🇩🇪', number: '+49 1512 345678' },
-            { country: 'Canada', flag: '🇨🇦', number: '+1 416 555 0000' }
-        ];
-
-        const sampleSenders = ['Amazon', 'Google', 'Telegram', 'WhatsApp', 'Facebook', 'Bank', 'Uber'];
-        
-        // 3. Render Numbers
-        const grid = document.getElementById('numbersGrid');
-
-        function renderNumbers(list) {
-            grid.innerHTML = '';
-            list.forEach(item => {
-                const card = document.createElement('div');
-                card.className = 'number-card';
-                card.innerHTML = `
-                    <div class="number-header">
-                        <span class="country-flag">${item.flag} ${item.country}</span>
+        // --- RENDER GRID ---
+        const grid = document.getElementById('numberGrid');
+        function renderNumbers(data) {
+            grid.innerHTML = data.map(item => `
+                <div class="card">
+                    <div class="card-header"><span>${item.flag}</span> ${item.code}</div>
+                    <div class="number-display">${item.num}</div>
+                    <div class="actions">
+                        <button class="btn-copy" onclick="copyNumber('${item.num}')">Copy</button>
+                        <button class="btn-open" onclick="openInbox('${item.num}', '${item.flag}')">Open Inbox</button>
                     </div>
-                    <div style="font-size: 22px; font-weight: 500; letter-spacing: 1px;">
-                        ${item.number}
-                    </div>
-                    <div class="card-actions">
-                        <button class="btn btn-copy" onclick="copyText('${item.number}')">Copy Number</button>
-                        <button class="btn btn-view" onclick="openInbox('${item.number}', '${item.flag}')">View SMS</button>
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
+                </div>
+            `).join('');
         }
-        renderNumbers(phoneNumbers);
+        renderNumbers(numbersData);
 
-        // 4. Search Filter
-        function filterNumbers() {
+        // --- SEARCH ---
+        function handleSearch() {
             const query = document.getElementById('searchInput').value.toLowerCase();
-            const filtered = phoneNumbers.filter(item => 
-                item.country.toLowerCase().includes(query) || 
-                item.number.includes(query)
+            const filtered = numbersData.filter(item => 
+                item.code.toLowerCase().includes(query) || item.num.includes(query)
             );
             renderNumbers(filtered);
         }
 
-        // 5. Copy & Toast Notification
-        function copyText(text) {
-            navigator.clipboard.writeText(text).then(() => {
-                const toast = document.getElementById("toast");
-                toast.innerText = `Copied: ${text}`;
-                toast.className = "toast show";
-                setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 3000);
-            });
+        // --- COPY & TOAST ---
+        function copyNumber(text) {
+            navigator.clipboard.writeText(text);
+            const toast = document.getElementById('toast');
+            toast.innerText = `Copied ${text}`;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2500);
         }
 
-        // 6. Inbox & Auto Refresh Logic
+        // --- API & INBOX LOGIC ---
         const modal = document.getElementById('inboxModal');
-        const msgList = document.getElementById('messagesList');
-        let refreshInterval;
+        const msgList = document.getElementById('messageList');
+        let refreshTimer;
+        let currentOpenNumber = '';
 
-        function generateRandomMessage() {
-            const sender = sampleSenders[Math.floor(Math.random() * sampleSenders.length)];
+        // Fallback dummy data generator
+        function getDummyMessages() {
+            const senders = ['Amazon', 'Google', 'Telegram', 'Netflix', 'Bank Alerts'];
             const otp = Math.floor(100000 + Math.random() * 900000);
-            const msgs = [
-                `Your verification code is ${otp}. Don't share this.`,
-                `Use ${otp} to log in to your account.`,
-                `Your confirmation PIN is ${otp}.`,
-                `Verification code: ${otp}. Valid for 5 minutes.`
-            ];
-            const body = msgs[Math.floor(Math.random() * msgs.length)];
-            
-            // Format time as HH:MM
             const now = new Date();
-            const timeStr = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
-
-            return { sender, body, time: timeStr };
+            const time = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
+            return {
+                sender: senders[Math.floor(Math.random() * senders.length)],
+                text: `Your verification code is ${otp}. Do not share this with anyone.`,
+                time: time
+            };
         }
 
-        function addMessageToUI(msg) {
-            const div = document.createElement('div');
-            div.className = 'message-item';
-            div.innerHTML = `
-                <div class="msg-top">
-                    <span class="msg-sender">${msg.sender}</span>
-                    <span class="msg-time">${msg.time}</span>
-                </div>
-                <div class="msg-body">${msg.body}</div>
-            `;
-            msgList.prepend(div); // Add new messages to the top
+        async function fetchMessages(number, isInitialLoad = false) {
+            if (isInitialLoad) msgList.innerHTML = `<div class="loading-text">Fetching secure connection...</div>`;
+
+            try {
+                // Attempting to call the real API
+                const response = await fetch(`https://api.example.com/messages?number=${encodeURIComponent(number)}`);
+                if (!response.ok) throw new Error("API Offline");
+                
+                const data = await response.json();
+                // Render API data here if successful
+                
+            } catch (error) {
+                // FALLBACK: If API fails (which it will for example.com), generate dummy data
+                if (isInitialLoad) msgList.innerHTML = ''; // Clear loading text
+                
+                // Add a new dummy message to the top
+                const msg = getDummyMessages();
+                const html = `
+                    <div class="msg-item">
+                        <div class="msg-top">
+                            <span class="msg-sender">${msg.sender}</span>
+                            <span class="msg-time">${msg.time}</span>
+                        </div>
+                        <div class="msg-text">${msg.text}</div>
+                    </div>
+                `;
+                msgList.insertAdjacentHTML('afterbegin', html);
+            }
         }
 
         function openInbox(number, flag) {
-            document.getElementById('modalNumberTitle').innerText = `${flag} Inbox: ${number}`;
-            msgList.innerHTML = ''; // Clear old messages
-            
-            // Generate initial messages
-            for(let i=0; i<3; i++) {
-                addMessageToUI(generateRandomMessage());
-            }
-
+            currentOpenNumber = number;
+            document.getElementById('modalTitle').innerText = `${flag} ${number}`;
             modal.style.display = 'flex';
+            
+            // Initial fetch (will trigger fallback)
+            fetchMessages(number, true);
+            // Add a couple more historical messages instantly for realism
+            setTimeout(() => fetchMessages(number, false), 500);
+            setTimeout(() => fetchMessages(number, false), 1000);
 
-            // Auto refresh every 5 seconds (simulating new SMS)
-            refreshInterval = setInterval(() => {
-                // 30% chance to get a new message every 5 seconds to make it look natural
-                if(Math.random() > 0.7) {
-                    addMessageToUI(generateRandomMessage());
-                }
+            // Auto refresh every 5 seconds
+            refreshTimer = setInterval(() => {
+                // 40% chance to simulate receiving a new message every 5s
+                if (Math.random() > 0.6) fetchMessages(currentOpenNumber, false);
             }, 5000);
         }
 
         function closeInbox() {
             modal.style.display = 'none';
-            clearInterval(refreshInterval);
+            clearInterval(refreshTimer);
         }
 
-        // Close modal when clicking outside
-        window.onclick = function(event) {
-            if (event.target == modal) {
-                closeInbox();
-            }
+        function closeModalOnOutsideClick(e) {
+            if (e.target === modal) closeInbox();
         }
     </script>
 </body>
